@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String?
+  phone     String?
+  country   String?
+  role      String   @default("customer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+  inquiries Inquiry[]
+  wishlist  WishlistItem[]
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  collection  String
+  price       Float
+  type        String
+  isNew       Boolean  @default(false)
+  isSale      Boolean  @default(false)
+  description String
+  material    String
+  gemstone    String
+  origin      String
+  image       String?
+  images      String?  // JSON: ["url1","url2",...]
+  sizes       String?  // JSON: [{"size":"5","price":null},...]
+  colors      String?  // JSON: [{"name":"Yellow Gold","hex":"#D4A96A","price":null},...]
+  subCategory String?  // "Rings","Necklaces","Bangles","Bracelets","Chains","Earrings","Pendants"
+  stock       Int      @default(10)
+  createdAt   DateTime @default(now())
+  orderItems  OrderItem[]
+  wishlist    WishlistItem[]
+}
+
+model CollectionMeta {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  eyebrow     String?
+  caption     String?
+  description String?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  customerName   String
+  customerEmail  String
+  phone          String?
+  addressLine1   String
+  addressLine2   String?
+  city           String
+  postCode       String
+  country        String
+  shippingMethod String      @default("standard")
+  status         String      @default("pending")
+  total          Float
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User?       @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  shipment       Shipment?
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  qty       Int
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Shipment {
+  id        String   @id @default(cuid())
+  orderId   String   @unique
+  carrier   String
+  tracking  String
+  fromCity  String
+  toCity    String
+  progress  Int      @default(0)
+  eta       String?
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Inquiry {
+  id        String    @id @default(cuid())
+  userId    String?
+  name      String
+  email     String
+  phone     String?
+  country   String?
+  type      String
+  message   String
+  status    String    @default("new")
+  images    String?
+  reply     String?
+  repliedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+model Promotion {
+  id          String    @id @default(cuid())
+  name        String
+  type        String    @default("percentage")
+  discount    Float?
+  collections String?
+  code        String?   @unique
+  endsAt      DateTime?
+  status      String    @default("active")
+  image       String?
+  description String?
+  badge       String?
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@unique([userId, productId])
+}
+
+model Category {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  slug       String   @unique
+  parentType String   @default("Jewellery")
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+}
