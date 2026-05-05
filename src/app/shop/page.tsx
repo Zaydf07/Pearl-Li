@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { PRODUCTS_DATA } from "@/lib/data";
 import ShopClient from "./ShopClient";
 import Footer from "@/components/Footer";
 
@@ -11,7 +12,8 @@ export default async function ShopPage({
 }) {
   const { filter, category, collection } = await searchParams;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []) as any[];
+  let products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []) as any[];
+  if (products.length === 0) products = PRODUCTS_DATA;
 
   let meta = null;
   if (collection) {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { COLLECTIONS_DATA } from "@/lib/data";
 import Footer from "@/components/Footer";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,10 @@ export default async function CollectionsPage() {
     orderBy: { collection: "asc" },
   }).catch(() => []);
 
+  const collections = rows.length > 0
+    ? rows.map(r => r.collection)
+    : COLLECTIONS_DATA.map(c => c.name);
+
   let metadata: any[] = [];
   try {
     metadata = await prisma.collectionMeta.findMany();
@@ -25,7 +30,6 @@ export default async function CollectionsPage() {
     // Table may not exist yet, continue with empty metadata
   }
   const metaMap = new Map(metadata.map((m: any) => [m.name, m]));
-  const collections = rows.map(r => r.collection);
 
   return (
     <>

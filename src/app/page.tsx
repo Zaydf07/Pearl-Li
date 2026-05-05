@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { CATEGORIES_DATA, COLLECTIONS_DATA } from "@/lib/data";
+import { CATEGORIES_DATA, COLLECTIONS_DATA, PRODUCTS_DATA } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
 import PromoTimer from "@/components/PromoTimer";
 import Footer from "@/components/Footer";
@@ -10,8 +10,11 @@ export const dynamic = "force-dynamic";
 
 async function getFeaturedProducts() {
   try {
-    return await prisma.product.findMany({ where: { isNew: true }, take: 4 });
-  } catch { return []; }
+    const rows = await prisma.product.findMany({ where: { isNew: true }, take: 4 });
+    return rows.length > 0 ? rows : PRODUCTS_DATA.filter(p => p.isNew).slice(0, 4);
+  } catch {
+    return PRODUCTS_DATA.filter(p => p.isNew).slice(0, 4);
+  }
 }
 
 export default async function HomePage() {

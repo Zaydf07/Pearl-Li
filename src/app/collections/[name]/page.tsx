@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { PRODUCTS_DATA } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 
@@ -40,10 +41,11 @@ export default async function CollectionPage({
   const meta = COLLECTION_META[collectionName] ?? DEFAULT_META;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const products = await prisma.product.findMany({
+  let products = await prisma.product.findMany({
     where: { collection: collectionName },
     orderBy: { createdAt: "desc" },
   }).catch(() => []) as any[];
+  if (products.length === 0) products = PRODUCTS_DATA.filter(p => p.collection === collectionName);
 
   const allCollections = Object.keys(COLLECTION_META).filter(c => c !== collectionName);
 
