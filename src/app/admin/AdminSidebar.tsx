@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 const NAV = [
   { section: "Overview", items: [{ label: "Dashboard", icon: "◈", href: "/admin" }] },
-  { section: "Commerce", items: [{ label: "Orders", icon: "◻", href: "/admin/orders" }, { label: "Shipping", icon: "◈", href: "/admin/shipping" }, { label: "Products", icon: "◇", href: "/admin/products" }, { label: "Categories", icon: "⊞", href: "/admin/categories" }] },
+  { section: "Commerce", items: [{ label: "Orders", icon: "◻", href: "/admin/orders" }, { label: "Shipping", icon: "◈", href: "/admin/shipping" }, { label: "Products", icon: "◇", href: "/admin/products" }, { label: "Categories", icon: "⊞", href: "/admin/categories" }, { label: "Collections", icon: "◐", href: "/admin/collections" }] },
   { section: "Customers", items: [{ label: "Users", icon: "◯", href: "/admin/users" }, { label: "Inquiries", icon: "✉", href: "/admin/inquiries" }] },
   { section: "Settings", items: [{ label: "Promotions", icon: "✦", href: "/admin/promotions" }] },
 ];
