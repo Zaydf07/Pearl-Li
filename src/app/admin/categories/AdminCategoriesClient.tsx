@@ -95,7 +95,7 @@ export default function AdminCategoriesClient() {
                       {items.map(c => (
                         <tr key={c.id}>
                           <td><strong>{c.name}</strong></td>
-                          <td style={{ fontSize: 11, color: "var(--ink-muted)", fontFamily: "monospace" }}>/shop?category={c.slug}</td>
+                          <td style={{ fontSize: 11, color: "var(--ink-muted)", fontFamily: "monospace" }}>/shop/{c.slug}</td>
                           <td style={{ fontSize: 12 }}>{c.sortOrder}</td>
                           <td>
                             <button onClick={() => openEdit(c)} style={{ background: "none", border: "none", fontSize: 9, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--emerald)", cursor: "pointer", marginRight: 8 }}>Edit</button>

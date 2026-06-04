@@ -8,11 +8,10 @@ interface Category { id: string; name: string; slug: string; parentType: string;
 interface CollectionMeta { name: string; eyebrow?: string | null; caption?: string | null; description?: string | null; image?: string | null; href: string; }
 
 const FALLBACK_COLLECTIONS: CollectionMeta[] = [
-  { name: "Celestial",   eyebrow: "New 2026",  image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80", href: "/collections/Celestial"   },
-  { name: "Serpentine",  eyebrow: "Signature", image: "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=600&q=80", href: "/collections/Serpentine"  },
-  { name: "Jadore",      eyebrow: "Heritage",  image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80", href: "/collections/Jadore"      },
-  { name: "Timepieces",  eyebrow: "Curated",   image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&q=80", href: "/collections/Timepieces"  },
-  { name: "Accessories", eyebrow: "Luxury",    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80", href: "/collections/Accessories" },
+  { name: "CT Bracelets", eyebrow: "Signature", image: "/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png", href: "/collections/CT%20Bracelets" },
+  { name: "CT Necklaces", eyebrow: "New 2026", image: "/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png", href: "/collections/CT%20Necklaces" },
+  { name: "CT Rings",     eyebrow: "Heritage",  image: "/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png", href: "/collections/CT%20Rings"     },
+  { name: "CT Earrings",  eyebrow: "Luxury",    image: "/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png", href: "/collections/CT%20Earrings"  },
 ];
 
 export default function Nav() {
@@ -45,7 +44,7 @@ export default function Nav() {
 
   useEffect(() => {
     const path = window.location.pathname;
-    setDark(path === "/" || path === "/collections" || path === "/specials");
+    setDark(path === "/" || path === "/collections" || path === "/specials" || path === "/consultation");
   }, []);
 
   useEffect(() => {
@@ -65,7 +64,7 @@ export default function Nav() {
   return (
     <>
       <div className="announcement-bar">
-        Complimentary worldwide shipping on orders over $800 &nbsp;·&nbsp; New: <strong>Celestial 2026</strong> &nbsp;·&nbsp; Book a private consultation
+        Complimentary worldwide shipping on orders over $800 &nbsp;·&nbsp; New: <strong>CT Series</strong> &nbsp;·&nbsp; Book a private consultation
       </div>
 
       <nav id="main-nav" className={transparent ? "at-top" : ""} ref={navRef}>
@@ -133,21 +132,16 @@ export default function Nav() {
           <div>
             <div className="nav-dd-title">Jewellery</div>
             {categories.filter(c => c.parentType === "Jewellery").map(cat => (
-              <Link key={cat.id} href={`/shop/${cat.slug}`} className="nav-dd-link">{cat.name}</Link>
+              <Link key={cat.id} href={`/shop?category=${encodeURIComponent(cat.slug)}`} className="nav-dd-link">{cat.name}</Link>
             ))}
             <Link href="/shop" className="nav-dd-link-all">View All Jewellery →</Link>
           </div>
 
-          {/* Col 2 — Other */}
+          {/* Col 2 — Specials */}
           <div>
             <div className="nav-dd-title">More</div>
-            {categories.filter(c => c.parentType === "Watches").map(cat => (
-              <Link key={cat.id} href={`/shop/${cat.slug}`} className="nav-dd-link">{cat.name}</Link>
-            ))}
-            {categories.filter(c => c.parentType === "Accessories").map(cat => (
-              <Link key={cat.id} href={`/shop/${cat.slug}`} className="nav-dd-link">{cat.name}</Link>
-            ))}
-            <Link href="/specials" className="nav-dd-link">Gifts &amp; Sale</Link>
+            <Link href="/shop?filter=New" className="nav-dd-link">New Arrivals</Link>
+            <Link href="/shop?filter=Sale" className="nav-dd-link">Sale</Link>
             <Link href="/shop" className="nav-dd-link-all" style={{ marginTop: 28 }}>Browse Everything →</Link>
           </div>
 
@@ -161,14 +155,14 @@ export default function Nav() {
 
           {/* Col 4 — Image */}
           <div>
-            <div className="nav-dd-title">New This Season</div>
-            <Link href="/collections/Celestial" style={{ textDecoration: "none" }}>
+            <div className="nav-dd-title">Featured Now</div>
+            <Link href="/collections/CT%20Bracelets" style={{ textDecoration: "none" }}>
               <img
-                src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80"
-                alt="Celestial Collection"
+                src="/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png"
+                alt="CT Bracelets Collection"
                 className="nav-dd-img"
               />
-              <div className="nav-dd-caption">Celestial Collection — 2026</div>
+              <div className="nav-dd-caption">CT Series — Bracelets</div>
             </Link>
           </div>
         </div>
@@ -182,7 +176,9 @@ export default function Nav() {
         <div className="nav-dd-inner" style={{ gridTemplateColumns: "1fr 1fr 1fr 1.4fr" }}>
           {/* Collections list */}
           <div style={{ gridColumn: "1 / 3" }}>
-            <div className="nav-dd-title">Our Collections</div>
+            <div style={{ fontSize: 8, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 12, fontWeight: 600 }}>Featured Collection</div>
+            <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 400, color: "var(--white)", marginBottom: 4, lineHeight: 1.1 }}>CT Series Collection</h3>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,.55)", marginBottom: 32, lineHeight: 1.6 }}>Explore our signature jewelry categories</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 40px" }}>
               {collections.map(c => (
                 <div key={c.name} style={{ marginBottom: 20 }}>
@@ -191,7 +187,7 @@ export default function Nav() {
                 </div>
               ))}
             </div>
-            <Link href="/collections" className="nav-dd-link-all" style={{ marginTop: 16 }}>Explore All Collections →</Link>
+            <Link href="/collections" className="nav-dd-link-all" style={{ marginTop: 32 }}>Explore All Collections →</Link>
           </div>
 
           {/* Spacer */}
@@ -227,10 +223,10 @@ export default function Nav() {
           <div className="mobile-nav-section">Shop</div>
           <Link href="/shop"         className="mobile-nav-link" onClick={() => setMobileOpen(false)}>All Pieces</Link>
           {categories.filter(c => c.parentType === "Jewellery").map(c => (
-            <Link key={c.id} href={`/shop/${c.slug}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
+            <Link key={c.id} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
           ))}
           {categories.filter(c => c.parentType !== "Jewellery").map(c => (
-            <Link key={c.id} href={`/shop/${c.slug}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
+            <Link key={c.id} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
           ))}
 
           <div className="mobile-nav-section">Collections</div>

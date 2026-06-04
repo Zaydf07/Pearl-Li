@@ -11,6 +11,8 @@ export default async function ShopPage({
   searchParams: Promise<{ filter?: string; category?: string; collection?: string }>;
 }) {
   const { filter, category, collection } = await searchParams;
+  const categorySlug = category?.toLowerCase();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []) as any[];
   if (products.length === 0) products = PRODUCTS_DATA;
@@ -24,10 +26,20 @@ export default async function ShopPage({
     }
   }
 
+  let categoryName = category;
+  if (categorySlug) {
+    try {
+      const categoryRecord = await prisma.category.findUnique({ where: { slug: categorySlug } });
+      if (categoryRecord) categoryName = categoryRecord.name;
+    } catch {
+      // ignore lookup failures
+    }
+  }
+
   const heading = collection
     ? `${collection} Collection`
-    : category
-    ? category
+    : categoryName
+    ? categoryName
     : "All Pieces";
 
   return (
@@ -46,7 +58,7 @@ export default async function ShopPage({
           </div>
         )}
       </div>
-      <ShopClient products={products} initialFilter={filter} initialCategory={category} initialCollection={collection} />
+      <ShopClient products={products} initialFilter={filter} initialCategory={categoryName ?? category} initialCollection={collection} />
       <Footer />
     </>
   );

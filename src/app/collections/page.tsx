@@ -41,6 +41,14 @@ export default async function CollectionsPage() {
       </div>
 
       <div className="collections-band" style={{ padding: "80px 0" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: 48 }}>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(28px, 3vw, 48px)", fontWeight: 400, color: "var(--white)", marginBottom: 60, textAlign: "center" }}>
+            CT Series Collection
+          </h2>
+          <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, color: "rgba(255,255,255,.65)", textAlign: "center", marginBottom: 80 }}>
+            Explore our signature jewelry categories within the CT Series
+          </p>
+        </div>
         <div className="collections-grid">
           {collections.map(name => {
             const meta = metaMap.get(name) ?? DEFAULT_META;

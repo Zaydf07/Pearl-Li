@@ -32,16 +32,17 @@ export default function ShopClient({
 
   const filterChips = ["All", ...categories.map(c => c.name), "New", "Sale"];
 
+  const activeKey = active.toLowerCase();
   const filtered = products.filter(p => {
     if (active === "All")  return true;
     if (active === "New")  return p.isNew;
     if (active === "Sale") return p.isSale;
     // collection match
-    if (p.collection === active) return true;
+    if (p.collection.toLowerCase() === activeKey) return true;
     // subCategory match
-    if (p.subCategory === active) return true;
+    if (p.subCategory?.toLowerCase() === activeKey) return true;
     // broad type match
-    if (p.type === active) return true;
+    if (p.type.toLowerCase() === activeKey) return true;
     return false;
   });
 
