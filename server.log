@@ -146,3 +146,7 @@
 ✓ Compiled in 107ms
  GET /collections 200 in 332ms (next.js: 213ms, application-code: 119ms)
  GET /admin 200 in 336ms (next.js: 110ms, application-code: 227ms)
+✓ Compiled in 305ms
+ GET /admin 200 in 764ms (next.js: 614ms, application-code: 151ms)
+ GET /collections 200 in 755ms (next.js: 314ms, application-code: 442ms)
+ GET /specials 200 in 1052ms (next.js: 384ms, application-code: 668ms)

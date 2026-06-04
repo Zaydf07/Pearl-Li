@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { PRODUCTS_DATA } from "@/lib/data";
 import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import SizingGuide from "@/components/SizingGuide";
@@ -16,12 +17,17 @@ function parseJson<T>(val: unknown, fallback: T): T {
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const product = await prisma.product.findUnique({ where: { slug } }).catch(() => null) as any;
+  const dbProduct = await prisma.product.findUnique({ where: { slug } }).catch(() => null) as any;
+  // Fallback to in-repo PRODUCTS_DATA when DB has no record (useful for production without seeded DB)
+  const product = dbProduct ?? PRODUCTS_DATA.find(p => p.slug === slug) ?? null;
   if (!product) notFound();
 
   const related = await prisma.product.findMany({
     where: { collection: product.collection, NOT: { id: product.id } }, take: 4,
-  }).catch(() => []);
+  }).catch(() => (
+    // fallback to PRODUCTS_DATA related items
+    PRODUCTS_DATA.filter(p => p.collection === product.collection && p.slug !== product.slug).slice(0, 4)
+  ));
 
   const extraImages = parseJson<string[]>(product.images, []);
   // Support both old string[] and new {size,price}[] formats

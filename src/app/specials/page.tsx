@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { PRODUCTS_DATA } from "@/lib/data";
 import Link from "next/link";
 import PromoTimer from "@/components/PromoTimer";
 import Footer from "@/components/Footer";
@@ -16,11 +17,16 @@ export default async function SpecialsPage() {
   const activePromo = activePromos[0] ?? null;
   const promoPosts  = activePromos; // all shown as posts below hero
 
-  const products = await prisma.product.findMany({
+  let products = await prisma.product.findMany({
     where: { isSale: true },
     take: 12,
     orderBy: { createdAt: "desc" },
   }).catch(() => []);
+
+  // If there are no sale products in the database, fall back to in-repo PRODUCTS_DATA
+  if (!products || products.length === 0) {
+    products = PRODUCTS_DATA.filter(p => p.isSale).slice(0, 12) as any[];
+  }
 
   // Build hero text from the active promotion, or fall back to defaults
   const heroEyebrow  = "Limited Time";
