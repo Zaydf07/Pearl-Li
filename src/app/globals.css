@@ -112,7 +112,7 @@ input,textarea,select{font-family:'Montserrat',sans-serif}
 .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
 .product-card{background:var(--white);cursor:pointer;overflow:hidden}
 .product-card-img{aspect-ratio:3/4;overflow:hidden;position:relative;background:var(--cream)}
-.product-card-img-inner{width:100%;height:100%;background-size:cover;background-position:center;transition:transform .6s ease}
+.product-card-img-inner{width:100%;height:100%;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:transform .6s ease}
 .product-card:hover .product-card-img-inner{transform:scale(1.05)}
 .product-card-actions{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:all .3s}
 .product-card:hover .product-card-actions{background:rgba(0,0,0,.15);opacity:1}

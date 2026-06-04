@@ -10,10 +10,10 @@ export const dynamic = "force-dynamic";
 
 async function getFeaturedProducts() {
   try {
-    const rows = await prisma.product.findMany({ where: { isNew: true }, take: 4 });
-    return rows.length > 0 ? rows : PRODUCTS_DATA.filter(p => p.isNew).slice(0, 4);
+    const rows = await prisma.product.findMany({ where: { collection: "CT Series" }, take: 4 });
+    return rows.length > 0 ? rows : PRODUCTS_DATA.filter(p => p.collection === "CT Series").slice(0, 4);
   } catch {
-    return PRODUCTS_DATA.filter(p => p.isNew).slice(0, 4);
+    return PRODUCTS_DATA.filter(p => p.collection === "CT Series").slice(0, 4);
   }
 }
 
@@ -131,7 +131,7 @@ export default async function HomePage() {
               margin: "0 0 20px",
               lineHeight: 1.1,
             }}>
-              Celestial Collection
+              CT Series Collection
             </h2>
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
@@ -158,8 +158,8 @@ export default async function HomePage() {
       <div className="editorial-split">
         <div className="editorial-media">
           <img
-            src="https://images.unsplash.com/photo-1573408301185-9519f94f4d90?w=900&q=80"
-            alt="Pearl & Li editorial"
+            src="/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image13.png"
+            alt="CT Series LOVE Bracelet"
           />
         </div>
         <div className="editorial-text-panel" style={{ padding: "100px 96px" }}>
@@ -192,7 +192,7 @@ export default async function HomePage() {
             margin: "0 0 16px",
             lineHeight: 1.05,
           }}>
-            The Celestial Sale
+            The CT Series Sale
           </h2>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",

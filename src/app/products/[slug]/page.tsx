@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
+import SizingGuide from "@/components/SizingGuide";
 import ProductGallery from "./ProductGallery";
 import ProductOptions from "./ProductOptions";
 import Footer from "@/components/Footer";
@@ -40,7 +41,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Gallery */}
           <div style={{ background: "var(--cream)" }}>
-            <ProductGallery mainImage={product.image} extraImages={extraImages} name={product.name} />
+            <ProductGallery
+              mainImage={product.image}
+              extraImages={extraImages}
+              name={product.name}
+              sizingGuideType={product.subCategory === "Bracelets" ? "bracelet" : product.subCategory === "Rings" ? "ring" : undefined}
+              productSize={sizes.length > 0 ? sizes[0].size : undefined}
+            />
           </div>
 
           {/* Info */}
@@ -48,12 +55,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 12 }}>
               {product.collection} Collection
             </div>
-            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.5vw,36px)", fontWeight: 400, color: "var(--black)", lineHeight: 1.2, marginBottom: 8 }}>
+            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.5vw,36px)", fontWeight: 400, color: "var(--black)", lineHeight: 1.2, marginBottom: 20 }}>
               {product.name}
             </h1>
-            <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 400, color: "var(--black)", marginBottom: 20 }}>
-              ${product.price.toLocaleString()}
-            </div>
             <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 17, fontWeight: 300, lineHeight: 1.7, color: "var(--ink-muted)", marginBottom: 28 }}>
               {product.description}
             </p>
@@ -61,7 +65,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <ProductOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image }} sizes={sizes} colors={colors} />
 
             <div style={{ borderTop: "1.5px solid var(--border)", paddingTop: 22, display: "flex", flexDirection: "column", gap: 10 }}>
-              {[["Material", product.material], ["Gemstone", product.gemstone], ["Ships in", "3–5 Business Days"], ["Origin", product.origin]].map(([k, v]) => (
+              {[["Material", product.material], ["Gemstone", product.gemstone], ["Ships in", "3–5 Business Days"]].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 11 }}>
                   <span style={{ color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: ".1em" }}>{k}</span>
                   <span style={{ fontWeight: 500 }}>{v}</span>
@@ -70,6 +74,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
         </div>
+
 
         {related.length > 0 && (
           <section className="section" style={{ background: "var(--off-white)" }}>

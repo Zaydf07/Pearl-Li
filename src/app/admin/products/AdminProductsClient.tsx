@@ -41,6 +41,7 @@ export default function AdminProductsClient({ products: initial }: { products: P
   const [editing, setEditing] = useState<Product | null>(null);
   const [saving,  setSaving]  = useState(false);
   const [deleting,setDeleting]= useState<string | null>(null);
+  const [search,  setSearch]  = useState("");
 
   useEffect(() => {
     fetch("/api/categories").then(r => r.json()).then(setCategories).catch(() => {});
@@ -168,7 +169,7 @@ export default function AdminProductsClient({ products: initial }: { products: P
       <div className="admin-topbar"><h2>Products</h2></div>
       <div className="admin-content">
         <div style={{ display: "flex", gap: 14, marginBottom: 20 }}>
-          <input placeholder="Search products…" style={{ flex: 1, border: "1.5px solid var(--border)", padding: "10px 14px", fontSize: 12, background: "var(--white)", outline: "none" }} />
+          <input placeholder="Search products…" value={search} onChange={e => setSearch(e.target.value)} style={{ flex: 1, border: "1.5px solid var(--border)", padding: "10px 14px", fontSize: 12, background: "var(--white)", outline: "none" }} />
           <button className="btn-emerald" style={{ padding: "10px 20px", whiteSpace: "nowrap" }} onClick={openAdd}>+ Add Product</button>
         </div>
 
@@ -176,7 +177,7 @@ export default function AdminProductsClient({ products: initial }: { products: P
           <table className="admin-table">
             <thead><tr><th>Product</th><th>Collection</th><th>Category</th><th>Price</th><th>Sizes</th><th>Colours</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
-              {products.map(p => (
+              {products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.collection.toLowerCase().includes(search.toLowerCase())).map(p => (
                 <tr key={p.id}>
                   <td style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{ width: 40, height: 40, backgroundImage: p.image ? `url(${p.image})` : undefined, backgroundSize: "cover", background: p.image ? undefined : "var(--cream)", flexShrink: 0 }} />

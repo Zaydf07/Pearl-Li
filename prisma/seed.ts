@@ -7,6 +7,23 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database…");
 
+  // Create jewelry categories
+  const categories = [
+    { name: "Bracelets", slug: "bracelets", parentType: "Jewellery", sortOrder: 1 },
+    { name: "Necklaces", slug: "necklaces", parentType: "Jewellery", sortOrder: 2 },
+    { name: "Rings", slug: "rings", parentType: "Jewellery", sortOrder: 3 },
+    { name: "Earrings", slug: "earrings", parentType: "Jewellery", sortOrder: 4 },
+    { name: "Anklets", slug: "anklets", parentType: "Jewellery", sortOrder: 5 },
+  ];
+
+  for (const cat of categories) {
+    await prisma.category.upsert({
+      where: { slug: cat.slug },
+      update: {},
+      create: cat,
+    });
+  }
+
   // Seed products
   for (const p of PRODUCTS_DATA) {
     await prisma.product.upsert({
