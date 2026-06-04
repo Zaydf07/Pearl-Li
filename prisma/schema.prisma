@@ -20,6 +20,7 @@ model User {
   orders    Order[]
   inquiries Inquiry[]
   wishlist  WishlistItem[]
+  reviews   Review[]
   accounts  Account[]
   sessions  Session[]
 }
@@ -68,9 +69,12 @@ model Product {
   colors      String?  // JSON: [{"name":"Yellow Gold","hex":"#D4A96A","price":null},...]
   subCategory String?  // "Rings","Necklaces","Bangles","Bracelets","Chains","Earrings","Pendants"
   stock       Int      @default(10)
+  avgRating   Float    @default(0)
+  reviewCount Int      @default(0)
   createdAt   DateTime @default(now())
   orderItems  OrderItem[]
   wishlist    WishlistItem[]
+  reviews     Review[]
 }
 
 model CollectionMeta {
@@ -178,4 +182,19 @@ model Category {
   parentType String   @default("Jewellery")
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  userId    String?
+  rating    Int      // 1-5
+  title     String
+  content   String
+  verified  Boolean  @default(false)
+  helpful   Int      @default(0)
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([productId])
 }

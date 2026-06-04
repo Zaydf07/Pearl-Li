@@ -3,6 +3,7 @@ import { PRODUCTS_DATA } from "@/lib/data";
 import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import SizingGuide from "@/components/SizingGuide";
+import ProductReviews from "@/components/ProductReviews";
 import ProductGallery from "./ProductGallery";
 import ProductOptions from "./ProductOptions";
 import Footer from "@/components/Footer";
@@ -68,19 +69,34 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {product.description}
             </p>
 
-            <ProductOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image }} sizes={sizes} colors={colors} />
+            <ProductOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image }} sizes={sizes} colors={colors} disabled={product.stock === 0} />
+
+            {product.stock === 0 && (
+              <div style={{ padding: 12, background: "rgba(192,57,43,0.1)", border: "1px solid var(--red)", borderRadius: 4, marginBottom: 16, fontSize: 12, color: "var(--red)", fontWeight: 500 }}>
+                ⚠ Out of Stock
+              </div>
+            )}
+            {product.stock > 0 && product.stock < 5 && (
+              <div style={{ padding: 12, background: "rgba(212,166,106,0.1)", border: "1px solid var(--emerald)", borderRadius: 4, marginBottom: 16, fontSize: 12, color: "var(--emerald)", fontWeight: 500 }}>
+                ⚡ Only {product.stock} left in stock
+              </div>
+            )}
 
             <div style={{ borderTop: "1.5px solid var(--border)", paddingTop: 22, display: "flex", flexDirection: "column", gap: 10 }}>
-              {[["Material", product.material], ["Gemstone", product.gemstone], ["Ships in", "3–5 Business Days"]].map(([k, v]) => (
+              {[["Material", product.material], ["Gemstone", product.gemstone], ["Ships in", "3–5 Business Days"], ["Stock", product.stock > 0 ? `${product.stock} available` : "Out of Stock"]].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 11 }}>
                   <span style={{ color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: ".1em" }}>{k}</span>
-                  <span style={{ fontWeight: 500 }}>{v}</span>
+                  <span style={{ fontWeight: 500, color: k === "Stock" && product.stock === 0 ? "var(--red)" : "inherit" }}>{v}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
+        {/* Reviews */}
+        <div className="container">
+          <ProductReviews productSlug={product.slug} avgRating={product.avgRating || 0} reviewCount={product.reviewCount || 0} />
+        </div>
 
         {related.length > 0 && (
           <section className="section" style={{ background: "var(--off-white)" }}>

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
 
 interface OrderItem { name: string; qty: number; price: number; image: string | null; slug: string; }
 interface Order {
@@ -348,11 +349,7 @@ export default function AccountClient({
             )}
           </button>
         ))}
-        <Link href="/login">
-          <button style={{ marginTop: 24, padding: "12px 18px", fontSize: 9, letterSpacing: ".16em", textTransform: "uppercase", fontWeight: 600, color: "var(--ink-faint)", background: "none", border: "none", textAlign: "left", cursor: "pointer" }}>
-            Sign Out
-          </button>
-        </Link>
+        <LogoutButton />
       </div>
 
       {/* Content */}

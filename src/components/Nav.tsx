@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 
@@ -22,6 +23,7 @@ const FALLBACK_CATEGORIES: Category[] = [
 ];
 
 export default function Nav() {
+  const router = useRouter();
   const { count, toggleCart }   = useCart();
   const { count: wishCount }    = useWishlist();
   const [atTop, setAtTop]       = useState(true);
@@ -30,6 +32,7 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [categories, setCategories]   = useState<Category[]>([]);
   const [collections, setCollections] = useState<CollectionMeta[]>(FALLBACK_COLLECTIONS);
+  const [search, setSearch]     = useState("");
   const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,6 +68,14 @@ export default function Nav() {
 
   const toggle = (menu: "shop" | "collections") =>
     setOpenMenu(prev => (prev === menu ? null : menu));
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search.trim()) {
+      router.push(`/search?q=${encodeURIComponent(search)}`);
+      setSearch("");
+    }
+  };
 
   const transparent = atTop && dark;
 
@@ -109,6 +120,38 @@ export default function Nav() {
           </div>
 
           <div className="nav-actions">
+            {/* Search form — desktop only */}
+            <form onSubmit={handleSearch} className="nav-search nav-desktop-only" style={{ position: "relative", display: "flex", alignItems: "center", background: "transparent" }}>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search jewels..."
+                style={{
+                  width: 140,
+                  padding: "6px 8px 6px 8px",
+                  fontSize: 11,
+                  border: "none",
+                  borderBottom: `1px solid ${transparent ? "rgba(255,255,255,0.3)" : "var(--border)"}`,
+                  background: "transparent",
+                  color: transparent ? "white" : "var(--ink)",
+                  outline: "none",
+                  transition: "all .2s",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderBottomColor = transparent ? "rgba(255,255,255,0.6)" : "var(--emerald)";
+                  e.currentTarget.style.paddingBottom = "4px";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderBottomColor = transparent ? "rgba(255,255,255,0.3)" : "var(--border)";
+                  e.currentTarget.style.paddingBottom = "6px";
+                }}
+              />
+              <button type="submit" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, color: transparent ? "rgba(255,255,255,0.7)" : "var(--ink-faint)", padding: "0 0 6px 6px", transition: "color .2s" }} title="Search">
+                🔍
+              </button>
+            </form>
+
             <Link href="/account"  className="nav-act-btn nav-desktop-only">Account</Link>
             <Link href="/wishlist" className="nav-act-btn nav-desktop-only">
               Wishlist {wishCount > 0 && <span className="cart-dot">{wishCount}</span>}
@@ -229,6 +272,30 @@ export default function Nav() {
           <button onClick={() => setMobileOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", color: "var(--ink-faint)" }}>×</button>
         </div>
         <div className="mobile-nav-body">
+          {/* Mobile search */}
+          <form onSubmit={handleSearch} style={{ padding: "12px 16px", borderBottom: "1px solid var(--border)", marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--off-white)", padding: "6px 12px", borderRadius: 4 }}>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                style={{
+                  flex: 1,
+                  padding: 0,
+                  fontSize: 12,
+                  border: "none",
+                  background: "transparent",
+                  color: "var(--ink)",
+                  outline: "none",
+                }}
+              />
+              <button type="submit" style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: "var(--ink-faint)" }}>
+                🔍
+              </button>
+            </div>
+          </form>
+
           <div className="mobile-nav-section">Shop</div>
           <Link href="/shop"         className="mobile-nav-link" onClick={() => setMobileOpen(false)}>All Pieces</Link>
           {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery").map(c => (

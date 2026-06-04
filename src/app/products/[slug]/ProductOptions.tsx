@@ -14,9 +14,10 @@ interface Props {
   };
   sizes:  SizeVariant[];
   colors: ColorVariant[];
+  disabled?: boolean;
 }
 
-export default function ProductOptions({ product, sizes, colors }: Props) {
+export default function ProductOptions({ product, sizes, colors, disabled = false }: Props) {
   const { addItem, toggleCart } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
 
@@ -131,8 +132,12 @@ export default function ProductOptions({ product, sizes, colors }: Props) {
       {error && <p style={{ color: "var(--red)", fontSize: 11, marginBottom: 12 }}>{error}</p>}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-        <button className="btn-black" style={{ width: "100%" }} onClick={handleAddToBag}>
-          Add to Bag — ${displayPrice.toLocaleString()}
+        <button
+          disabled={disabled}
+          className="btn-black"
+          style={{ width: "100%", opacity: disabled ? 0.5 : 1, cursor: disabled ? "not-allowed" : "pointer" }}
+          onClick={handleAddToBag}>
+          {disabled ? "Out of Stock" : `Add to Bag — $${displayPrice.toLocaleString()}`}
         </button>
         <button
           onClick={() => toggleItem({ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image ?? undefined })}

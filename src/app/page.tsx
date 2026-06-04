@@ -1,12 +1,30 @@
 import Link from "next/link";
+import { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { CATEGORIES_DATA, COLLECTIONS_DATA, PRODUCTS_DATA } from "@/lib/data";
+import { DEFAULT_SEO } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import PromoTimer from "@/components/PromoTimer";
 import Footer from "@/components/Footer";
 import HeroCarousel from "@/components/HeroCarousel";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: DEFAULT_SEO.title,
+  description: DEFAULT_SEO.description,
+  keywords: DEFAULT_SEO.keywords,
+  openGraph: {
+    title: DEFAULT_SEO.title,
+    description: DEFAULT_SEO.description,
+    images: [{ url: DEFAULT_SEO.image }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_SEO.title,
+    description: DEFAULT_SEO.description,
+  },
+};
 
 async function getFeaturedProducts() {
   try {
