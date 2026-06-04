@@ -124,3 +124,25 @@
  GET /products/ct-love-ring-55mm-3-diamonds 200 in 297ms (next.js: 195ms, application-code: 103ms)
 [browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
  GET / 200 in 317ms (next.js: 214ms, application-code: 103ms)
+ GET /shop 200 in 419ms (next.js: 89ms, application-code: 330ms)
+ GET /api/categories 200 in 47ms (next.js: 13ms, application-code: 34ms)
+ GET /api/categories 200 in 32ms (next.js: 12ms, application-code: 19ms)
+ GET /collections 200 in 412ms (next.js: 256ms, application-code: 156ms)
+ GET /specials 200 in 234ms (next.js: 72ms, application-code: 162ms)
+ GET /specials 200 in 88ms (next.js: 5ms, application-code: 82ms)
+ GET /collections 200 in 102ms (next.js: 17ms, application-code: 84ms)
+ GET /admin/promotions 200 in 1714ms (next.js: 1623ms, application-code: 91ms)
+ GET /admin 200 in 363ms (next.js: 255ms, application-code: 108ms)
+ GET /collections 200 in 55ms (next.js: 8ms, application-code: 47ms)
+ GET /collections/CT%20Series 200 in 1919ms (next.js: 1640ms, application-code: 279ms)
+ GET /collections/CT%20Series 200 in 145ms (next.js: 30ms, application-code: 115ms)
+ GET /collections 200 in 76ms (next.js: 8ms, application-code: 68ms)
+✓ Compiled in 616ms
+ GET /collections 200 in 1393ms (next.js: 561ms, application-code: 833ms)
+ GET /admin 200 in 1409ms (next.js: 1148ms, application-code: 261ms)
+✓ Compiled in 159ms
+ GET /admin 200 in 477ms (next.js: 359ms, application-code: 117ms)
+ GET /collections 200 in 480ms (next.js: 127ms, application-code: 353ms)
+✓ Compiled in 107ms
+ GET /collections 200 in 332ms (next.js: 213ms, application-code: 119ms)
+ GET /admin 200 in 336ms (next.js: 110ms, application-code: 227ms)

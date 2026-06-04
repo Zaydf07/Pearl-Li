@@ -14,6 +14,13 @@ const FALLBACK_COLLECTIONS: CollectionMeta[] = [
   { name: "CT Earrings",  eyebrow: "Luxury",    image: "/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png", href: "/collections/CT%20Earrings"  },
 ];
 
+const FALLBACK_CATEGORIES: Category[] = [
+  { id: "bracelet", name: "CT Bracelets", slug: "bracelet", parentType: "Jewellery", sortOrder: 0 },
+  { id: "necklace", name: "CT Necklaces", slug: "necklace", parentType: "Jewellery", sortOrder: 1 },
+  { id: "ring", name: "CT Rings", slug: "ring", parentType: "Jewellery", sortOrder: 2 },
+  { id: "earring", name: "CT Earrings", slug: "earring", parentType: "Jewellery", sortOrder: 3 },
+];
+
 export default function Nav() {
   const { count, toggleCart }   = useCart();
   const { count: wishCount }    = useWishlist();
@@ -65,6 +72,7 @@ export default function Nav() {
     <>
       <div className="announcement-bar">
         Complimentary worldwide shipping on orders over $800 &nbsp;·&nbsp; New: <strong>CT Series</strong> &nbsp;·&nbsp; Book a private consultation
+        <span style={{ marginLeft: 12, fontSize: 12, opacity: 0.9 }}>· Redeploy marker: v1</span>
       </div>
 
       <nav id="main-nav" className={transparent ? "at-top" : ""} ref={navRef}>
@@ -131,7 +139,7 @@ export default function Nav() {
           {/* Col 1 — Jewellery categories */}
           <div>
             <div className="nav-dd-title">Jewellery</div>
-            {categories.filter(c => c.parentType === "Jewellery").map(cat => (
+            {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery").map(cat => (
               <Link key={cat.id} href={`/shop?category=${encodeURIComponent(cat.slug)}`} className="nav-dd-link">{cat.name}</Link>
             ))}
             <Link href="/shop" className="nav-dd-link-all">View All Jewellery →</Link>
@@ -142,6 +150,7 @@ export default function Nav() {
             <div className="nav-dd-title">More</div>
             <Link href="/shop?filter=New" className="nav-dd-link">New Arrivals</Link>
             <Link href="/shop?filter=Sale" className="nav-dd-link">Sale</Link>
+            <Link href="/specials" className="nav-dd-link">Specials</Link>
             <Link href="/shop" className="nav-dd-link-all" style={{ marginTop: 28 }}>Browse Everything →</Link>
           </div>
 
@@ -222,10 +231,10 @@ export default function Nav() {
         <div className="mobile-nav-body">
           <div className="mobile-nav-section">Shop</div>
           <Link href="/shop"         className="mobile-nav-link" onClick={() => setMobileOpen(false)}>All Pieces</Link>
-          {categories.filter(c => c.parentType === "Jewellery").map(c => (
+          {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery").map(c => (
             <Link key={c.id} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
           ))}
-          {categories.filter(c => c.parentType !== "Jewellery").map(c => (
+          {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType !== "Jewellery").map(c => (
             <Link key={c.id} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
           ))}
 

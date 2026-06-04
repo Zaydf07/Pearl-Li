@@ -30,7 +30,9 @@ export default function ShopClient({
     fetch("/api/categories").then(r => r.json()).then(setCategories).catch(() => {});
   }, []);
 
-  const filterChips = ["All", ...categories.map(c => c.name), "New", "Sale"];
+  const FALLBACK_CATEGORY_NAMES = ["CT Bracelets", "CT Necklaces", "CT Rings", "CT Earrings"];
+  const categoryNames = categories.length > 0 ? categories.map(c => c.name) : FALLBACK_CATEGORY_NAMES;
+  const filterChips = ["All", ...categoryNames, "New", "Sale"];
 
   const activeKey = active.toLowerCase();
   const filtered = products.filter(p => {
