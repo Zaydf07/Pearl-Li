@@ -82,8 +82,10 @@ export default function Nav() {
   return (
     <>
       <div className="announcement-bar">
-        Complimentary worldwide shipping on orders over $800 &nbsp;·&nbsp; New: <strong>CT Series</strong> &nbsp;·&nbsp; Book a private consultation
-        <span style={{ marginLeft: 12, fontSize: 12, opacity: 0.9 }}>· Redeploy marker: v1</span>
+        <span className="announcement-text">
+          Complimentary worldwide shipping on orders over $800
+          <span className="announcement-extra"> &nbsp;·&nbsp; New: <strong>CT Series</strong> &nbsp;·&nbsp; Book a private consultation</span>
+        </span>
       </div>
 
       <nav id="main-nav" className={transparent ? "at-top" : ""} ref={navRef}>

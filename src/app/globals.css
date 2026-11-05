@@ -54,12 +54,13 @@ input,textarea,select{font-family:'Montserrat',sans-serif}
 
 /* ANNOUNCEMENT */
 .announcement-bar{background:var(--emerald);color:var(--white);display:flex;align-items:center;justify-content:center;height:40px;padding:0 20px;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;position:fixed;top:0;left:0;right:0;z-index:1001}
+.announcement-text{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 
 /* NAV */
 #main-nav{position:fixed;left:0;right:0;z-index:1000;transition:all .4s;top:40px;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 #main-nav.at-top{background:transparent;border-bottom-color:transparent}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:76px;padding:0 48px}
-.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;letter-spacing:.04em;cursor:pointer;color:var(--black)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;letter-spacing:.04em;cursor:pointer;color:var(--black);white-space:nowrap}
 #main-nav.at-top .nav-logo{color:var(--white)}
 .nav-logo span{color:var(--emerald)}
 #main-nav.at-top .nav-logo span{color:var(--emerald-mid)}
@@ -291,6 +292,19 @@ input,textarea,select{font-family:'Montserrat',sans-serif}
 .mobile-nav-sub:hover{color:var(--emerald);padding-left:40px}
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+/* The full desktop nav doesn't fit below this width: switch to the hamburger */
+@media(max-width:1180px){
+  .nav-links{display:none}
+  .nav-desktop-only{display:none !important}
+  .nav-hamburger{display:flex}
+  .nav-dropdown{display:none}
+  .announcement-bar{letter-spacing:.14em}
+}
+/* Only the shipping message fits on one line below this width */
+@media(max-width:900px){
+  .announcement-extra{display:none}
+}
+
 @media(max-width:1024px){
   .auth-page{grid-template-columns:1fr}
   .auth-media{display:none}
@@ -313,7 +327,7 @@ input,textarea,select{font-family:'Montserrat',sans-serif}
   .section-sm{padding:40px 0}
 
   /* Announcement bar */
-  .announcement-bar{font-size:8.5px;letter-spacing:.1em;padding:8px 12px}
+  .announcement-bar{font-size:8.5px;letter-spacing:.1em;height:36px;padding:0 12px}
 
   /* Nav */
   .nav-inner{padding:0 20px;height:60px}
