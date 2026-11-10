@@ -115,6 +115,7 @@ model OrderItem {
   productId String
   qty       Int
   price     Float
+  variant   String? // chosen option, e.g. "14K White Gold · 7.00 ct · 7 in · Lot 1551301"
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id])
 }

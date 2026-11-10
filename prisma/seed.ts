@@ -14,6 +14,20 @@ async function main() {
     { name: "Rings", slug: "rings", parentType: "Jewellery", sortOrder: 3 },
     { name: "Earrings", slug: "earrings", parentType: "Jewellery", sortOrder: 4 },
     { name: "Anklets", slug: "anklets", parentType: "Jewellery", sortOrder: 5 },
+    { name: "Pendants", slug: "pendants", parentType: "Jewellery", sortOrder: 6 },
+    { name: "Drop Earrings", slug: "drop-earrings", parentType: "Jewellery", sortOrder: 7 },
+    { name: "Huggie Earrings", slug: "huggie-earrings", parentType: "Jewellery", sortOrder: 8 },
+    { name: "Hoop Earrings", slug: "hoop-earrings", parentType: "Jewellery", sortOrder: 9 },
+    { name: "Heart Pendants", slug: "heart-pendants", parentType: "Jewellery", sortOrder: 10 },
+    { name: "Cushion Pendants", slug: "cushion-pendants", parentType: "Jewellery", sortOrder: 11 },
+    { name: "Tennis Bracelets", slug: "tennis-bracelets", parentType: "Jewellery", sortOrder: 12 },
+    { name: "Chain Bracelets", slug: "chain-bracelets", parentType: "Jewellery", sortOrder: 13 },
+    { name: "Engagement Rings", slug: "engagement-rings", parentType: "Jewellery", sortOrder: 14 },
+    { name: "Halo Rings", slug: "halo-rings", parentType: "Jewellery", sortOrder: 15 },
+    { name: "Bridal Rings", slug: "bridal-rings", parentType: "Jewellery", sortOrder: 16 },
+    { name: "Eternity Rings", slug: "eternity-rings", parentType: "Jewellery", sortOrder: 17 },
+    { name: "Classic Rings", slug: "classic-rings", parentType: "Jewellery", sortOrder: 18 },
+    { name: "Men's Rings", slug: "mens-rings", parentType: "Jewellery", sortOrder: 19 },
   ];
 
   for (const cat of categories) {

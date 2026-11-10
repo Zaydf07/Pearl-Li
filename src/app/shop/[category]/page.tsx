@@ -19,7 +19,7 @@ export default async function CategoryPage({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const products = await prisma.product.findMany({
-    where: { subCategory: cat.name },
+    where: { OR: [{ subCategory: cat.name }, { collection: cat.name }] },
     orderBy: { createdAt: "desc" },
   }).catch(() => []) as any[];
 
@@ -32,7 +32,7 @@ export default async function CategoryPage({
         <span className="eyebrow" style={{ color: "var(--emerald-mid)", display: "block", marginBottom: 16 }}>
           Pearl &amp; Li
         </span>
-        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(40px,5vw,72px)", fontWeight: 400, color: "var(--white)", margin: "0 0 16px" }}>
+        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(40px,calc(5vw / var(--zoom, 1)),72px)", fontWeight: 400, color: "var(--white)", margin: "0 0 16px" }}>
           {cat.name}
         </h1>
       </div>
@@ -59,7 +59,7 @@ export default async function CategoryPage({
           </div>
         </>
       ) : (
-        <div style={{ background: "var(--off-white)", minHeight: "50vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 80 }}>
+        <div style={{ background: "var(--off-white)", minHeight: "calc(50vh / var(--zoom, 1))", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 80 }}>
           <div style={{ fontSize: 48, marginBottom: 24, opacity: 0.15 }}>◇</div>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 400, marginBottom: 12, color: "var(--black)" }}>
             Coming Soon

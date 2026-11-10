@@ -35,7 +35,7 @@ export default async function AdminOrdersPage() {
     date:           new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
     shippingMethod: o.shippingMethod,
     items:          o.items.map(i => ({
-      name:  i.product.name,
+      name:  i.variant ? `${i.product.name} — ${i.variant}` : i.product.name,
       qty:   i.qty,
       price: i.price,
       image: i.product.image,

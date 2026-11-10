@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { PRODUCTS_DATA } from "@/lib/data";
+import { COLLECTIONS_DATA, PRODUCTS_DATA } from "@/lib/data";
+import { COLLECTIONS_14KT } from "@/lib/categories";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 
@@ -13,6 +14,8 @@ const COLLECTION_META: Record<string, { eyebrow: string; desc: string; image: st
   Jadore:      { eyebrow: "Heritage",  desc: "Imperial jade meets diamond halos — a dialogue between East and West, ancient and modern.",          image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1400&q=80" },
   Timepieces:  { eyebrow: "Curated",  desc: "Swiss-movement timepieces housed in precious metal cases with fine leather straps.",                  image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=1400&q=80" },
   Accessories: { eyebrow: "Luxury",   desc: "Silk scarves, python leather goods and accessories with precious hardware.",                          image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=1400&q=80" },
+  ...Object.fromEntries(COLLECTIONS_DATA.map(c => [c.name, { eyebrow: c.eyebrow, desc: c.desc, image: c.image }])),
+  ...Object.fromEntries(COLLECTIONS_14KT.map(c => [c.name, { eyebrow: c.eyebrow, desc: c.description, image: c.image }])),
 };
 
 const DEFAULT_META = {
@@ -29,10 +32,14 @@ export default async function CollectionPage({
   const { name } = await params;
   const collectionName = decodeURIComponent(name);
 
+  // "CT Bracelets" and friends are views of the CT Series, split by subCategory.
+  const ctSubCategory = COLLECTIONS_DATA.find(c => c.name === collectionName)?.subCategory;
+  const where = ctSubCategory
+    ? { collection: "CT Series", subCategory: ctSubCategory }
+    : { collection: collectionName };
+
   // Check this collection exists in the DB
-  const exists = await prisma.product.findFirst({
-    where: { collection: collectionName },
-  }).catch(() => null);
+  const exists = await prisma.product.findFirst({ where }).catch(() => null);
 
   // Also allow known collections even if no products yet
   const knownCollection = COLLECTION_META[collectionName];
@@ -42,10 +49,14 @@ export default async function CollectionPage({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let products = await prisma.product.findMany({
-    where: { collection: collectionName },
+    where,
     orderBy: { createdAt: "desc" },
   }).catch(() => []) as any[];
-  if (products.length === 0) products = PRODUCTS_DATA.filter(p => p.collection === collectionName);
+  if (products.length === 0) {
+    products = PRODUCTS_DATA.filter(p => ctSubCategory
+      ? p.collection === "CT Series" && p.subCategory === ctSubCategory
+      : p.collection === collectionName);
+  }
 
   const allCollections = Object.keys(COLLECTION_META).filter(c => c !== collectionName);
 
@@ -61,10 +72,10 @@ export default async function CollectionPage({
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,.3) 0%, rgba(0,0,0,.6) 100%)" }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 40px" }}>
           <span style={{ display: "block", fontSize: 9, letterSpacing: ".32em", textTransform: "uppercase", color: "var(--emerald-mid)", marginBottom: 16 }}>{meta.eyebrow}</span>
-          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(44px,6vw,80px)", fontWeight: 400, color: "var(--white)", margin: "0 0 20px", lineHeight: 1.1 }}>
+          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(44px,calc(6vw / var(--zoom, 1)),80px)", fontWeight: 400, color: "var(--white)", margin: "0 0 20px", lineHeight: 1.1 }}>
             {collectionName}
           </h1>
-          <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(16px,2vw,22px)", fontWeight: 300, color: "rgba(255,255,255,.7)", maxWidth: 560, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(16px,calc(2vw / var(--zoom, 1)),22px)", fontWeight: 300, color: "rgba(255,255,255,.7)", maxWidth: 560, lineHeight: 1.6 }}>
             {meta.desc}
           </p>
         </div>
@@ -94,7 +105,7 @@ export default async function CollectionPage({
           </div>
         </>
       ) : (
-        <div style={{ background: "var(--off-white)", minHeight: "40vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 80 }}>
+        <div style={{ background: "var(--off-white)", minHeight: "calc(40vh / var(--zoom, 1))", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 80 }}>
           <div style={{ fontSize: 48, marginBottom: 24, opacity: 0.15 }}>◇</div>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 400, marginBottom: 12 }}>Coming Soon</h2>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 300, color: "var(--ink-muted)", marginBottom: 36, maxWidth: 420 }}>

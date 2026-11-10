@@ -7,7 +7,7 @@ export default function ConsultationPage() {
       <div style={{ paddingTop: 116, background: "var(--white)" }}>
         <div className="shop-hero" style={{ padding: "80px 0 60px" }}>
           <span className="eyebrow">Private Service</span>
-          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(36px,5vw,60px)", fontWeight: 400 }}>
+          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(36px,calc(5vw / var(--zoom, 1)),60px)", fontWeight: 400 }}>
             Book a <em style={{ fontStyle: "italic", color: "var(--emerald-mid)" }}>Consultation</em>
           </h1>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: "rgba(255,255,255,.5)", maxWidth: 500, margin: "10px auto" }}>
@@ -17,7 +17,7 @@ export default function ConsultationPage() {
         <div className="consult-inner">
           <div className="consult-left">
             <span className="eyebrow">What to Expect</span>
-            <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(26px,3vw,40px)", fontWeight: 400, lineHeight: 1.2, color: "var(--black)", marginBottom: 14 }}>
+            <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(26px,calc(3vw / var(--zoom, 1)),40px)", fontWeight: 400, lineHeight: 1.2, color: "var(--black)", marginBottom: 14 }}>
               Your journey <em className="t-italic">begins here</em>
             </h2>
             <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 17, lineHeight: 1.7, color: "var(--ink-muted)", marginBottom: 28 }}>

@@ -32,7 +32,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       status,
       tracking:     tracking ?? null,
       carrier:      carrier  ?? null,
-      items:        order.items.map(i => ({ name: i.product.name, qty: i.qty, price: i.price })),
+      items:        order.items.map(i => ({ name: i.variant ? `${i.product.name} — ${i.variant}` : i.product.name, qty: i.qty, price: i.price })),
     }).catch(e => console.error("Status update email failed:", e));
   }
 

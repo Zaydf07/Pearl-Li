@@ -26,6 +26,16 @@ export const metadata: Metadata = {
   },
 };
 
+// One piece from each 14K style, so the homepage shows the full new range.
+const NEW_ARRIVAL_STYLES = ["Tennis Bracelets", "Engagement Rings", "Hoop Earrings", "Heart Pendants", "Chain Bracelets", "Halo Rings", "Huggie Earrings", "Cushion Pendants"];
+
+async function getNewArrivals() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let rows = await prisma.product.findMany({ where: { collection: { in: NEW_ARRIVAL_STYLES } } }).catch(() => []) as any[];
+  if (rows.length === 0) rows = PRODUCTS_DATA.filter(p => NEW_ARRIVAL_STYLES.includes(p.collection));
+  return NEW_ARRIVAL_STYLES.map(style => rows.find(p => p.collection === style)).filter(Boolean);
+}
+
 async function getFeaturedProducts() {
   try {
     const rows = await prisma.product.findMany({ where: { collection: "CT Series" }, take: 4 });
@@ -36,7 +46,7 @@ async function getFeaturedProducts() {
 }
 
 export default async function HomePage() {
-  const featured = await getFeaturedProducts();
+  const [featured, newArrivals] = await Promise.all([getFeaturedProducts(), getNewArrivals()]);
 
   return (
     <>
@@ -78,7 +88,7 @@ export default async function HomePage() {
           <div style={{ width: 40, height: 1, background: "rgba(168,216,192,0.5)", margin: "28px auto" }} />
 
           {/* Subtitle */}
-          <p className="hero-sub" style={{ margin: "0 auto 44px", fontSize: "clamp(15px,1.6vw,19px)" }}>
+          <p className="hero-sub" style={{ margin: "0 auto 44px", fontSize: "clamp(15px,calc(1.6vw / var(--zoom, 1)),19px)" }}>
             Where Italian artistry meets Eastern grace — fine jewellery and luxury goods for the discerning collector.
           </p>
 
@@ -98,7 +108,7 @@ export default async function HomePage() {
         <span className="eyebrow" style={{ display: "block", marginBottom: 14 }}>Collections &amp; Categories</span>
         <p style={{
           fontFamily: "'Playfair Display', serif",
-          fontSize: "clamp(26px, 3vw, 42px)",
+          fontSize: "clamp(26px, calc(3vw / var(--zoom, 1)), 42px)",
           fontWeight: 400,
           color: "var(--black)",
           margin: "0 auto 10px",
@@ -121,7 +131,7 @@ export default async function HomePage() {
       {/* ── CATEGORY STRIP ── */}
       <div className="cat-strip">
         {CATEGORIES_DATA.map((cat) => (
-          <Link href={`/shop?filter=${cat.type}`} key={cat.name} style={{ textDecoration: "none" }}>
+          <Link href={`/shop?category=${cat.slug}`} key={cat.name} style={{ textDecoration: "none" }}>
             <div className="cat-cell" style={{ aspectRatio: "2/3" }}>
               <div className="cat-bg" style={{ backgroundImage: `url(${cat.image})` }} />
               <div className="cat-dark-overlay" />
@@ -135,15 +145,43 @@ export default async function HomePage() {
         ))}
       </div>
 
+      {/* ── NEW ARRIVALS: 14K FINE JEWELLERY ── */}
+      {newArrivals.length > 0 && (
+        <section style={{ padding: "140px 0 0", background: "var(--white)" }}>
+          <div className="container">
+            <div className="section-header" style={{ marginBottom: 80 }}>
+              <div className="home-divider" />
+              <span className="eyebrow" style={{ display: "block", marginBottom: 20 }}>New Arrivals</span>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(34px, calc(4vw / var(--zoom, 1)), 58px)", fontWeight: 400, color: "var(--black)", margin: "0 0 20px", lineHeight: 1.1 }}>
+                14K Fine Jewellery
+              </h2>
+              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 300, color: "var(--ink-muted)", maxWidth: 560, margin: "0 auto", lineHeight: 1.75 }}>
+                Tennis bracelets, engagement rings, diamond hoops and pendants, set in 14K gold.
+              </p>
+            </div>
+          </div>
+          <div className="product-grid" style={{ maxWidth: 1400, margin: "0 auto" }}>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {newArrivals.map((p: any) => <ProductCard key={p.id} product={p} />)}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 64, display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link href="/shop?category=rings" className="btn-outline-e">Shop Rings</Link>
+            <Link href="/shop?category=bracelets" className="btn-outline-e">Shop Bracelets</Link>
+            <Link href="/shop?category=earrings" className="btn-outline-e">Shop Earrings</Link>
+            <Link href="/shop?category=pendants" className="btn-outline-e">Shop Pendants</Link>
+          </div>
+        </section>
+      )}
+
       {/* ── FEATURED PRODUCTS ── */}
       <section style={{ padding: "140px 0", background: "var(--white)" }}>
         <div className="container">
           <div className="section-header" style={{ marginBottom: 80 }}>
             <div className="home-divider" />
-            <span className="eyebrow" style={{ display: "block", marginBottom: 20 }}>New Arrivals</span>
+            <span className="eyebrow" style={{ display: "block", marginBottom: 20 }}>Signature</span>
             <h2 style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(34px, 4vw, 58px)",
+              fontSize: "clamp(34px, calc(4vw / var(--zoom, 1)), 58px)",
               fontWeight: 400,
               color: "var(--black)",
               margin: "0 0 20px",
@@ -184,7 +222,7 @@ export default async function HomePage() {
           <span className="eyebrow" style={{ color: "var(--emerald-mid)", marginBottom: 24, display: "block", letterSpacing: "0.36em" }}>
             The Pearl &amp; Li Story
           </span>
-          <h2 style={{ fontSize: "clamp(28px, 3.2vw, 46px)", lineHeight: 1.1, marginBottom: 28 }}>
+          <h2 style={{ fontSize: "clamp(28px, calc(3.2vw / var(--zoom, 1)), 46px)", lineHeight: 1.1, marginBottom: 28 }}>
             Born from <em>Two Worlds</em>
           </h2>
           <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 19, fontWeight: 300, lineHeight: 1.85, color: "rgba(255,255,255,.65)", marginBottom: 52 }}>
@@ -205,7 +243,7 @@ export default async function HomePage() {
           </span>
           <h2 style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: "clamp(32px, 4.5vw, 64px)",
+            fontSize: "clamp(32px, calc(4.5vw / var(--zoom, 1)), 64px)",
             fontWeight: 400,
             margin: "0 0 16px",
             lineHeight: 1.05,
@@ -240,7 +278,7 @@ export default async function HomePage() {
               </span>
               <h2 className="collections-header h2" style={{
                 fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(30px, 3.5vw, 52px)",
+                fontSize: "clamp(30px, calc(3.5vw / var(--zoom, 1)), 52px)",
                 fontWeight: 400,
                 color: "var(--white)",
                 margin: 0,
@@ -254,7 +292,7 @@ export default async function HomePage() {
         </div>
         <div className="collections-grid">
           {COLLECTIONS_DATA.map((coll) => (
-            <Link href="/shop" key={coll.name} style={{ textDecoration: "none" }}>
+            <Link href={`/collections/${encodeURIComponent(coll.name)}`} key={coll.name} style={{ textDecoration: "none" }}>
               <div className="coll-card">
                 <img src={coll.image} alt={coll.name} className="coll-bg" />
                 <div className="coll-overlay" />

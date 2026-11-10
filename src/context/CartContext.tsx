@@ -2,9 +2,14 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 
 export interface CartItem {
+  /** Unique per bag line (product + chosen option). */
   id: string; slug: string; name: string; collection: string;
   price: number; type: string; image?: string; qty: number;
   size?: string; color?: string;
+  /** The real product id, sent with the order. Older bag items fall back to `id`. */
+  productId?: string;
+  /** Readable chosen option, saved on the order line. */
+  variant?: string;
 }
 
 interface CartContextType {

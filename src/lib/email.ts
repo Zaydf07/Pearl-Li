@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { formatPrice } from "./format";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const resend = RESEND_API_KEY && RESEND_API_KEY !== "re_123" ? new Resend(RESEND_API_KEY) : null;
@@ -65,7 +66,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData) {
     <tr>
       <td style="padding: 10px 0; border-bottom: 1px solid #f0ede8; font-size: 13px; color: #1a1a1a;">${i.name}</td>
       <td style="padding: 10px 0; border-bottom: 1px solid #f0ede8; font-size: 13px; color: #6b6560; text-align: center;">× ${i.qty}</td>
-      <td style="padding: 10px 0; border-bottom: 1px solid #f0ede8; font-size: 13px; color: #1a1a1a; text-align: right; font-family: Georgia, serif;">$${(i.price * i.qty).toLocaleString()}</td>
+      <td style="padding: 10px 0; border-bottom: 1px solid #f0ede8; font-size: 13px; color: #1a1a1a; text-align: right; font-family: Georgia, serif;">$${formatPrice(i.price * i.qty)}</td>
     </tr>
   `).join("");
 
@@ -107,7 +108,7 @@ export async function sendOrderConfirmation(data: OrderConfirmationData) {
             <tfoot>
               <tr>
                 <td colspan="2" style="padding-top: 14px; font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: #a09990; font-family: 'Helvetica Neue', sans-serif; font-weight: 600;">Total</td>
-                <td style="padding-top: 14px; text-align: right; font-family: Georgia, serif; font-size: 18px; color: #0a0a0a;">$${data.total.toLocaleString()}</td>
+                <td style="padding-top: 14px; text-align: right; font-family: Georgia, serif; font-size: 18px; color: #0a0a0a;">$${formatPrice(data.total)}</td>
               </tr>
             </tfoot>
           </table>

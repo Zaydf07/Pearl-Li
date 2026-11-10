@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/Footer";
+import { formatPrice } from "@/lib/format";
 
 const COUNTRIES = [
   "Australia","Bahrain","Canada","China","Egypt","France","Germany","Hong Kong",
@@ -72,7 +73,12 @@ export default function CheckoutClient() {
           country:       info.country,
           shippingMethod: shipping,
           total:         orderTotal,
-          items:         items.map(i => ({ productId: i.id, qty: i.qty, price: i.price })),
+          items:         items.map(i => ({
+            productId: i.productId ?? i.id,
+            qty:       i.qty,
+            price:     i.price,
+            variant:   i.variant ?? ([i.color, i.size].filter(Boolean).join(" · ") || undefined),
+          })),
         }),
       });
       if (!res.ok) {
@@ -92,7 +98,7 @@ export default function CheckoutClient() {
   // ── Success screen ────────────────────────────────────────────────────────
   if (success) return (
     <>
-      <div style={{ paddingTop: 116, background: "var(--off-white)", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ paddingTop: 116, background: "var(--off-white)", minHeight: "calc(100vh / var(--zoom, 1))", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ background: "var(--white)", padding: 60, textAlign: "center", maxWidth: 480 }}>
           <div style={{ fontSize: 52, color: "var(--emerald)", marginBottom: 18 }}>✦</div>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 30, fontWeight: 400, marginBottom: 10 }}>Thank You</h2>
@@ -143,11 +149,11 @@ export default function CheckoutClient() {
                 </div>
               )}
               <div style={{ fontSize: 11, color: "rgba(255,255,255,.45)" }}>
-                ${i.price.toLocaleString()} × {i.qty}
+                ${formatPrice(i.price)} × {i.qty}
               </div>
             </div>
             <div style={{ fontSize: 13, color: "var(--white)", fontFamily: "'Playfair Display',serif", flexShrink: 0 }}>
-              ${(i.price * i.qty).toLocaleString()}
+              ${formatPrice(i.price * i.qty)}
             </div>
           </div>
         ))
@@ -156,7 +162,7 @@ export default function CheckoutClient() {
       {/* Totals */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "rgba(255,255,255,.55)" }}>
-          <span>Subtotal</span><span>${total.toLocaleString()}</span>
+          <span>Subtotal</span><span>${formatPrice(total)}</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "rgba(255,255,255,.55)" }}>
           <span>Shipping</span>
@@ -171,7 +177,7 @@ export default function CheckoutClient() {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 14, marginTop: 4, fontFamily: "'Playfair Display',serif", fontSize: 19, color: "var(--white)" }}>
           <span>Total</span>
-          <span>${(step >= 2 ? orderTotal : total).toLocaleString()}</span>
+          <span>${formatPrice(step >= 2 ? orderTotal : total)}</span>
         </div>
       </div>
 
@@ -340,18 +346,18 @@ export default function CheckoutClient() {
                 <div style={{ background: "var(--off-white)", border: "1.5px solid var(--border)", padding: "16px 20px", marginBottom: 20 }}>
                   <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: 12 }}>Order Total</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ink-muted)" }}><span>Subtotal</span><span>${total.toLocaleString()}</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ink-muted)" }}><span>Subtotal</span><span>${formatPrice(total)}</span></div>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ink-muted)" }}><span>{shippingOpt.label}</span><span>{shippingCost === 0 ? "Free" : `$${shippingCost}`}</span></div>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--ink-muted)" }}><span>Tax</span><span>$0.00</span></div>
                     <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: "1px solid var(--border)", fontFamily: "'Playfair Display',serif", fontSize: 18 }}>
-                      <strong>Total</strong><strong>${orderTotal.toLocaleString()}</strong>
+                      <strong>Total</strong><strong>${formatPrice(orderTotal)}</strong>
                     </div>
                   </div>
                 </div>
 
                 {error && <p style={{ color: "var(--red)", fontSize: 12, marginBottom: 12 }}>{error}</p>}
                 <button className="btn-emerald" style={{ width: "100%", padding: 18, fontSize: 13 }} onClick={placeOrder} disabled={loading}>
-                  {loading ? "Placing Order…" : `Place Order · $${orderTotal.toLocaleString()} ✦`}
+                  {loading ? "Placing Order…" : `Place Order · $${formatPrice(orderTotal)} ✦`}
                 </button>
                 <p style={{ fontSize: 10, color: "var(--ink-faint)", textAlign: "center", marginTop: 10, letterSpacing: ".04em" }}>
                   Secured with 256-bit SSL encryption · All transactions are safe and encrypted

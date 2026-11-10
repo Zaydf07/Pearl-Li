@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const validIds = new Set(existingProducts.map(p => p.id));
 
     // Filter to only valid items — if none are valid, create order with no items for now
-    const validItems = (items as { productId: string; qty: number; price: number }[])
+    const validItems = (items as { productId: string; qty: number; price: number; variant?: string }[])
       .filter(i => validIds.has(i.productId));
 
     const order = await prisma.order.create({
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
               productId: i.productId,
               qty:       i.qty,
               price:     parseFloat(String(i.price)),
+              variant:   typeof i.variant === "string" && i.variant.trim() ? i.variant.trim().slice(0, 200) : null,
             })),
           },
         }),
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
       to:             customerEmail.trim(),
       customerName:   customerName.trim(),
       orderId:        order.id,
-      items:          order.items.map(i => ({ name: i.product.name, qty: i.qty, price: i.price })),
+      items:          order.items.map(i => ({ name: i.variant ? `${i.product.name} — ${i.variant}` : i.product.name, qty: i.qty, price: i.price })),
       total:          parseFloat(String(total)),
       address:        `${addressLine1}${addressLine2 ? `, ${addressLine2}` : ""}, ${city}, ${postCode}, ${country}`,
       shippingMethod: shippingMethod || "standard",

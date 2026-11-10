@@ -45,7 +45,7 @@ export default async function SearchPage({
       <div style={{ paddingTop: 140, background: "var(--white)" }}>
         {/* Hero */}
         <div style={{ padding: "40px 48px", textAlign: "center", borderBottom: "1px solid var(--border)" }}>
-          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(28px,3vw,42px)", fontWeight: 400, marginBottom: 12 }}>
+          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(28px,calc(3vw / var(--zoom, 1)),42px)", fontWeight: 400, marginBottom: 12 }}>
             Search Results
           </h1>
           <p style={{ color: "var(--ink-faint)", marginBottom: 20 }}>
@@ -65,7 +65,7 @@ export default async function SearchPage({
             </div>
           </div>
         ) : (
-          <div style={{ padding: "80px 48px", textAlign: "center", minHeight: "50vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+          <div style={{ padding: "80px 48px", textAlign: "center", minHeight: "calc(50vh / var(--zoom, 1))", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
             <div style={{ fontSize: 48, marginBottom: 20, opacity: 0.15 }}>◇</div>
             <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 400, marginBottom: 12 }}>No results found</h2>
             <p style={{ color: "var(--ink-faint)", marginBottom: 24 }}>Try adjusting your search or browse our collections</p>

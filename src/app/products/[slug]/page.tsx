@@ -6,6 +6,8 @@ import SizingGuide from "@/components/SizingGuide";
 import ProductReviews from "@/components/ProductReviews";
 import ProductGallery from "./ProductGallery";
 import ProductOptions from "./ProductOptions";
+import VariantOptions from "./VariantOptions";
+import { CATALOGUE_14KT_VARIANTS } from "@/lib/catalogue-14kt";
 import Footer from "@/components/Footer";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +32,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     PRODUCTS_DATA.filter(p => p.collection === product.collection && p.slug !== product.slug).slice(0, 4)
   ));
 
+  // Products built from several stock lots offer metal / carat / size options instead.
+  const variants = CATALOGUE_14KT_VARIANTS[product.slug];
   const extraImages = parseJson<string[]>(product.images, []);
   // Support both old string[] and new {size,price}[] formats
   const rawSizes = parseJson<unknown[]>(product.sizes, []);
@@ -44,7 +48,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <div style={{ paddingTop: 116, background: "var(--white)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 600 }}>
+        {/* minmax(0,1fr) stops a long thumbnail strip from widening the gallery column */}
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", minHeight: 600 }}>
 
           {/* Gallery */}
           <div style={{ background: "var(--cream)" }}>
@@ -53,7 +58,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               extraImages={extraImages}
               name={product.name}
               sizingGuideType={product.subCategory === "Bracelets" ? "bracelet" : product.subCategory === "Rings" ? "ring" : undefined}
-              productSize={sizes.length > 0 ? sizes[0].size : undefined}
+              productSize={variants ? undefined : sizes.length > 0 ? sizes[0].size : undefined}
             />
           </div>
 
@@ -62,21 +67,25 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 12 }}>
               {product.collection} Collection
             </div>
-            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.5vw,36px)", fontWeight: 400, color: "var(--black)", lineHeight: 1.2, marginBottom: 20 }}>
+            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,calc(2.5vw / var(--zoom, 1)),36px)", fontWeight: 400, color: "var(--black)", lineHeight: 1.2, marginBottom: 20 }}>
               {product.name}
             </h1>
             <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 17, fontWeight: 300, lineHeight: 1.7, color: "var(--ink-muted)", marginBottom: 28 }}>
               {product.description}
             </p>
 
-            <ProductOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image }} sizes={sizes} colors={colors} disabled={product.stock === 0} />
+            {variants ? (
+              <VariantOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, type: product.type }} variants={variants} />
+            ) : (
+              <ProductOptions product={{ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image }} sizes={sizes} colors={colors} disabled={product.stock === 0} />
+            )}
 
             {product.stock === 0 && (
               <div style={{ padding: 12, background: "rgba(192,57,43,0.1)", border: "1px solid var(--red)", borderRadius: 4, marginBottom: 16, fontSize: 12, color: "var(--red)", fontWeight: 500 }}>
                 ⚠ Out of Stock
               </div>
             )}
-            {product.stock > 0 && product.stock < 5 && (
+            {!variants && product.stock > 0 && product.stock < 5 && (
               <div style={{ padding: 12, background: "rgba(212,166,106,0.1)", border: "1px solid var(--emerald)", borderRadius: 4, marginBottom: 16, fontSize: 12, color: "var(--emerald)", fontWeight: 500 }}>
                 ⚡ Only {product.stock} left in stock
               </div>

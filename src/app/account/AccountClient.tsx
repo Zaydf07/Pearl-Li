@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
+import { formatPrice } from "@/lib/format";
 
 interface OrderItem { name: string; qty: number; price: number; image: string | null; slug: string; }
 interface Order {
@@ -133,7 +134,7 @@ export default function AccountClient({
                         <div style={{ width: 44, height: 44, flexShrink: 0, background: item.image ? undefined : "var(--cream)", backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: "cover", border: "1px solid var(--border)" }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 12, fontWeight: 500 }}>{item.name}</div>
-                          <div style={{ fontSize: 11, color: "var(--ink-faint)" }}>Qty {item.qty} · ${item.price.toLocaleString()}</div>
+                          <div style={{ fontSize: 11, color: "var(--ink-faint)" }}>Qty {item.qty} · ${formatPrice(item.price)}</div>
                         </div>
                         <Link href={`/products/${item.slug}`} style={{ fontSize: 9, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--emerald)", textDecoration: "none" }}>View →</Link>
                       </div>

@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import AccountClient from "./AccountClient";
 import Footer from "@/components/Footer";
+import { formatPrice } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function AccountPage() {
   const orders = rawOrders.map(o => ({
     id:       o.id,
     date:     new Date(o.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-    total:    `$${o.total.toLocaleString()}`,
+    total:    `$${formatPrice(o.total)}`,
     status:   o.status,
     shipping: o.shippingMethod,
     tracking:  o.shipment?.tracking  ?? null,
@@ -65,7 +66,7 @@ export default async function AccountPage() {
 
   return (
     <>
-      <div style={{ paddingTop: 116, background: "var(--off-white)", minHeight: "100vh" }}>
+      <div style={{ paddingTop: 116, background: "var(--off-white)", minHeight: "calc(100vh / var(--zoom, 1))" }}>
         <div style={{ background: "var(--black)", padding: "52px 0" }}>
           <div className="container">
             <span className="eyebrow" style={{ color: "var(--emerald-mid)", display: "block", marginBottom: 8 }}>Welcome Back</span>
