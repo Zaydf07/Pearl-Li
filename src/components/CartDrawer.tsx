@@ -1,6 +1,7 @@
 "use client";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { formatPrice } from "@/lib/format";
 
 export default function CartDrawer() {
   const { items, total, open, toggleCart, removeItem } = useCart();
@@ -27,7 +28,10 @@ export default function CartDrawer() {
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 8, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 3 }}>{item.collection}</div>
                 <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 13, marginBottom: 6 }}>{item.name}</div>
-                <div style={{ fontSize: 12, color: "var(--ink-muted)" }}>${item.price.toLocaleString()} · Qty {item.qty}</div>
+                {(item.variant || item.color || item.size) && (
+                  <div style={{ fontSize: 11, color: "var(--ink-faint)", marginBottom: 4 }}>{item.variant ?? [item.color, item.size].filter(Boolean).join(" · ")}</div>
+                )}
+                <div style={{ fontSize: 12, color: "var(--ink-muted)" }}>${formatPrice(item.price)} · Qty {item.qty}</div>
                 <button onClick={() => removeItem(item.id)} style={{ background: "none", border: "none", fontSize: 10, color: "var(--ink-faint)", textDecoration: "underline", marginTop: 5, cursor: "pointer" }}>Remove</button>
               </div>
             </div>
@@ -37,7 +41,7 @@ export default function CartDrawer() {
         <div className="cart-foot">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
             <span style={{ fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--ink-muted)" }}>Subtotal</span>
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 22 }}>${total.toLocaleString()}</span>
+            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 22 }}>${formatPrice(total)}</span>
           </div>
           <button className="btn-emerald" style={{ width: "100%", marginBottom: 10 }} onClick={() => { toggleCart(); router.push("/checkout"); }}>
             Checkout

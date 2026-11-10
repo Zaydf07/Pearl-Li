@@ -1,3 +1,5 @@
+import { CATALOGUE_14KT_PRODUCTS } from "./catalogue-14kt";
+
 // CT JEWELLERY COLLECTION - Cartier CT Series
 export const CT_JEWELLERY_PRODUCTS = [
   // BRACELETS
@@ -33,20 +35,21 @@ export const CT_JEWELLERY_PRODUCTS = [
   { id:"ct-love-earrings-multiwear-half-paved", slug:"ct-love-earrings-multiwear-half-paved", name:"LOVE EARRINGS MULTIWEAR HALF-PAVED", collection:"CT Series", price:0, type:"Jewellery", isNew:true, isSale:false, description:"LOVE multiwear earrings with half diamond paving. Ref. N8515241. Material: 18K & 14K Gold Plated (Rose, White, Yellow). Width: 3.3mm. Length: 29.4mm. Versatile design for multiple piercing styles.", material:"18K & 14K Gold Plated", gemstone:"Diamonds", origin:"Italy", image:"/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image108.png", images:JSON.stringify(["/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image108.png","/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image109.png","/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image110.png","/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image111.png","/ct-jewellery/Earrings/LOVE_EARRINGS_MULTIWEAR_HALF-PAVED/image112.png"]), colors:JSON.stringify([{name:"Rose Gold",hex:"#B76E79",price:null},{name:"White Gold",hex:"#D3D3D3",price:null},{name:"Yellow Gold",hex:"#FFD700",price:null}]), sizes:JSON.stringify([{size:"29.4mm Length",price:null}]), subCategory:"Earrings", stock:10 },
 ];
 
-export const PRODUCTS_DATA = CT_JEWELLERY_PRODUCTS;
+export const PRODUCTS_DATA = [...CT_JEWELLERY_PRODUCTS, ...CATALOGUE_14KT_PRODUCTS];
 
 export const COLLECTIONS_DATA = [
-  { name:"CT Bracelets", eyebrow:"Signature", desc:"LOVE · JUSTE · DAMOUR · Diamond-paved & flexible designs", image:"/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png" },
-  { name:"CT Necklaces", eyebrow:"New 2026", desc:"Diamond-paved pendants · Adjustable chains · Iconic LOVE designs", image:"/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png" },
-  { name:"CT Rings", eyebrow:"Heritage", desc:"Diamond & ceramic · Flexible unlimited · Signature LOVE collection", image:"/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png" },
-  { name:"CT Earrings", eyebrow:"Luxury", desc:"Hoop · Multiwear · Diamond-paved statement pieces", image:"/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png" },
+  { name:"CT Bracelets", subCategory:"Bracelets", eyebrow:"Signature", desc:"LOVE · JUSTE · DAMOUR · Diamond-paved & flexible designs", image:"/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png" },
+  { name:"CT Necklaces", subCategory:"Necklaces", eyebrow:"New 2026", desc:"Diamond-paved pendants · Adjustable chains · Iconic LOVE designs", image:"/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png" },
+  { name:"CT Rings", subCategory:"Rings", eyebrow:"Heritage", desc:"Diamond & ceramic · Flexible unlimited · Signature LOVE collection", image:"/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png" },
+  { name:"CT Earrings", subCategory:"Earrings", eyebrow:"Luxury", desc:"Hoop · Multiwear · Diamond-paved statement pieces", image:"/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png" },
 ];
 
 export const CATEGORIES_DATA = [
-  { name:"Bracelets", sub:"LOVE · JUSTE · DAMOUR", type:"Jewellery", image:"/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png" },
-  { name:"Necklaces", sub:"Diamond-Paved · Pendant Chains", type:"Jewellery", image:"/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png" },
-  { name:"Rings", sub:"Diamond · Ceramic · Flexible", type:"Jewellery", image:"/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png" },
-  { name:"Earrings", sub:"Hoops · Multiwear · Statement", type:"Jewellery", image:"/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png" },
+  { name:"Bracelets", slug:"bracelets", sub:"Tennis · Chain · LOVE", type:"Jewellery", image:"/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png" },
+  { name:"Necklaces", slug:"necklaces", sub:"Diamond-Paved · Chains", type:"Jewellery", image:"/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png" },
+  { name:"Rings", slug:"rings", sub:"Engagement · Halo · Bridal", type:"Jewellery", image:"/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png" },
+  { name:"Earrings", slug:"earrings", sub:"Hoops · Huggies · Drops", type:"Jewellery", image:"/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png" },
+  { name:"Pendants", slug:"pendants", sub:"Heart · Cushion · Bezel Set", type:"Jewellery", image:"/14kt-jewellery/Pendants/PBZHS0105Y-24b97f84.jpg" },
 ];
 
 export const HERO_IMAGES = [

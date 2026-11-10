@@ -49,7 +49,7 @@ export default async function SpecialsPage() {
         <span className="eyebrow" style={{ color: "var(--emerald-mid)", display: "block", marginBottom: 12 }}>
           {heroEyebrow}
         </span>
-        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(34px,5vw,60px)", fontWeight: 400, marginBottom: 10 }}>
+        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(34px,calc(5vw / var(--zoom, 1)),60px)", fontWeight: 400, marginBottom: 10 }}>
           {heroTitle}
         </h1>
         <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: "rgba(255,255,255,.55)" }}>
@@ -86,7 +86,7 @@ export default async function SpecialsPage() {
                         </div>
                       )}
                       <div style={{ position: "absolute", bottom: 18, left: 20, right: 20 }}>
-                        <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(18px,2.5vw,28px)", fontWeight: 400, color: "var(--white)", margin: 0, lineHeight: 1.2 }}>{promo.name}</h3>
+                        <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(18px,calc(2.5vw / var(--zoom, 1)),28px)", fontWeight: 400, color: "var(--white)", margin: 0, lineHeight: 1.2 }}>{promo.name}</h3>
                       </div>
                     </div>
                   ) : (
@@ -94,7 +94,7 @@ export default async function SpecialsPage() {
                       {promo.badge && (
                         <div style={{ fontSize: 8, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--emerald-mid)", marginBottom: 10 }}>{promo.badge}</div>
                       )}
-                      <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(18px,2.5vw,26px)", fontWeight: 400, color: "var(--white)", margin: 0 }}>{promo.name}</h3>
+                      <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(18px,calc(2.5vw / var(--zoom, 1)),26px)", fontWeight: 400, color: "var(--white)", margin: 0 }}>{promo.name}</h3>
                     </div>
                   )}
                   {/* Post body */}

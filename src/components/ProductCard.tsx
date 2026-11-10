@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { formatPrice } from "@/lib/format";
+import { OPTION_COUNTS } from "@/lib/categories";
 
 interface Product {
   id: string; slug: string; name: string; collection: string;
@@ -13,9 +15,13 @@ export default function ProductCard({ product }: { product: Product }) {
   const { toggleItem, isInWishlist } = useWishlist();
   const wishlisted = isInWishlist(product.id);
 
+  // Products with metal / carat / size options are chosen on their page, so the quick button opens it.
+  const optionCount = OPTION_COUNTS[product.slug] ?? 0;
+
   const handleAddToCart = (e: React.MouseEvent) => {
+    if (optionCount > 1) return; // let the surrounding link open the product page
     e.preventDefault();
-    addToCart({ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image ?? undefined });
+    addToCart({ id: product.id, productId: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image ?? undefined });
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -32,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
             style={{ backgroundImage: product.image ? `url(${product.image})` : undefined }}
           />
           <div className="product-card-actions">
-            <button className="pca-btn" onClick={handleAddToCart}>Add to Bag</button>
+            <button className="pca-btn" onClick={handleAddToCart}>{optionCount > 1 ? "Choose Options" : "Add to Bag"}</button>
             <button
               className="pca-wish"
               onClick={handleWishlist}
@@ -52,7 +58,10 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="product-info">
           <div className="product-collection">{product.collection}</div>
           <div className="product-name">{product.name}</div>
-          <div className="product-price">${product.price.toLocaleString()}</div>
+          <div className="product-price">
+            {optionCount > 1 && "From "}${formatPrice(product.price)}
+            {optionCount > 1 && <span style={{ color: "var(--ink-faint)", fontWeight: 400 }}> · {optionCount} options</span>}
+          </div>
         </div>
       </div>
     </Link>

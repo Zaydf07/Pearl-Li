@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import Footer from "@/components/Footer";
+import { formatPrice } from "@/lib/format";
 
 export default function WishlistPage() {
   const { items, removeItem } = useWishlist();
@@ -18,7 +19,7 @@ export default function WishlistPage() {
       {/* Header */}
       <div style={{ background: "var(--black)", paddingTop: 140, paddingBottom: 60, textAlign: "center", color: "var(--white)" }}>
         <span className="eyebrow" style={{ color: "var(--emerald-mid)", display: "block", marginBottom: 14 }}>Your Saved Pieces</span>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 4vw, 56px)", fontWeight: 400, margin: 0 }}>
+        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, calc(4vw / var(--zoom, 1)), 56px)", fontWeight: 400, margin: 0 }}>
           Wishlist
         </h1>
         {items.length > 0 && (
@@ -29,7 +30,7 @@ export default function WishlistPage() {
       </div>
 
       {/* Content */}
-      <div style={{ background: "var(--off-white)", minHeight: "60vh", padding: "80px 0" }}>
+      <div style={{ background: "var(--off-white)", minHeight: "calc(60vh / var(--zoom, 1))", padding: "80px 0" }}>
         <div className="container">
           {items.length === 0 ? (
             /* Empty state */
@@ -62,7 +63,7 @@ export default function WishlistPage() {
                       <Link href={`/products/${item.slug}`} style={{ textDecoration: "none" }}>
                         <div className="wishlist-card-name">{item.name}</div>
                       </Link>
-                      <div className="wishlist-card-price">${item.price.toLocaleString()}</div>
+                      <div className="wishlist-card-price">${formatPrice(item.price)}</div>
 
                       <div className="wishlist-card-actions">
                         <button className="btn-emerald" style={{ fontSize: "9px", padding: "12px 24px" }} onClick={() => handleMoveToBag(item)}>

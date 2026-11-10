@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { formatPrice } from "@/lib/format";
 
 interface SizeVariant  { size: string;  price: number | null; }
 interface ColorVariant { name: string;  hex: string; price: number | null; }
@@ -41,6 +42,8 @@ export default function ProductOptions({ product, sizes, colors, disabled = fals
     setError("");
     addItem({
       id: `${product.id}_${size?.size ?? ""}_${color?.name ?? ""}`,
+      productId: product.id,
+      variant: [color?.name, size?.size].filter(Boolean).join(" · ") || undefined,
       slug: product.slug,
       name: product.name,
       collection: product.collection,
@@ -58,11 +61,11 @@ export default function ProductOptions({ product, sizes, colors, disabled = fals
       {/* Price — updates live */}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 20 }}>
         <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 400, color: "var(--black)" }}>
-          ${displayPrice.toLocaleString()}
+          ${formatPrice(displayPrice)}
         </div>
         {priceChanged && (
           <div style={{ fontSize: 12, color: "var(--ink-faint)", textDecoration: "line-through" }}>
-            ${product.price.toLocaleString()}
+            ${formatPrice(product.price)}
           </div>
         )}
       </div>
@@ -89,7 +92,7 @@ export default function ProductOptions({ product, sizes, colors, disabled = fals
                 {s.size}
                 {s.price != null && s.price !== product.price && (
                   <span style={{ position: "absolute", top: -8, right: -4, fontSize: 8, background: "var(--emerald)", color: "white", padding: "1px 4px" }}>
-                    ${s.price.toLocaleString()}
+                    ${formatPrice(s.price)}
                   </span>
                 )}
               </button>
@@ -120,7 +123,7 @@ export default function ProductOptions({ product, sizes, colors, disabled = fals
                 />
                 {c.price != null && c.price !== product.price && (
                   <div style={{ fontSize: 8, color: "var(--ink-faint)", marginTop: 3 }}>
-                    +${(c.price - product.price).toLocaleString()}
+                    +${formatPrice(c.price - product.price)}
                   </div>
                 )}
               </div>
@@ -137,7 +140,7 @@ export default function ProductOptions({ product, sizes, colors, disabled = fals
           className="btn-black"
           style={{ width: "100%", opacity: disabled ? 0.5 : 1, cursor: disabled ? "not-allowed" : "pointer" }}
           onClick={handleAddToBag}>
-          {disabled ? "Out of Stock" : `Add to Bag — $${displayPrice.toLocaleString()}`}
+          {disabled ? "Out of Stock" : `Add to Bag — $${formatPrice(displayPrice)}`}
         </button>
         <button
           onClick={() => toggleItem({ id: product.id, slug: product.slug, name: product.name, collection: product.collection, price: product.price, type: product.type, image: product.image ?? undefined })}

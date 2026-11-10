@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { PRODUCTS_DATA } from "@/lib/data";
+import { FALLBACK_CATEGORIES } from "@/lib/categories";
 import ShopClient from "./ShopClient";
 import Footer from "@/components/Footer";
 
@@ -10,12 +11,14 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<{ filter?: string; category?: string; collection?: string }>;
 }) {
-  const { filter, category, collection } = await searchParams;
+  const { category, collection } = await searchParams;
   const categorySlug = category?.toLowerCase();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []) as any[];
   if (products.length === 0) products = PRODUCTS_DATA;
+  // Send only what a card needs, as this page can list hundreds of products.
+  const cards = products.map(({ id, slug, name, collection, price, type, isNew, isSale, image, subCategory }) => ({ id, slug, name, collection, price, type, isNew, isSale, image, subCategory }));
 
   let meta = null;
   if (collection) {
@@ -26,7 +29,7 @@ export default async function ShopPage({
     }
   }
 
-  let categoryName = category;
+  let categoryName = FALLBACK_CATEGORIES.find(c => c.slug === categorySlug)?.name ?? category;
   if (categorySlug) {
     try {
       const categoryRecord = await prisma.category.findUnique({ where: { slug: categorySlug } });
@@ -36,29 +39,14 @@ export default async function ShopPage({
     }
   }
 
-  const heading = collection
-    ? `${collection} Collection`
-    : categoryName
-    ? categoryName
-    : "All Pieces";
-
+  // The heading and filters live in ShopClient and follow the address, so they always match.
   return (
     <>
-      <div className="shop-hero" style={{ backgroundImage: collection ? `url(${meta?.image ?? "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1400&q=80"})` : undefined, backgroundSize: collection ? "cover" : undefined, backgroundPosition: collection ? "center" : undefined }}>
-        <span className="eyebrow">Pearl &amp; Li</span>
-        <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(36px,5vw,60px)", fontWeight: 400 }}>
-          {heading}
-        </h1>
-        {collection && (
-          <div style={{ marginTop: 18, maxWidth: 720, color: meta ? "var(--white)" : "var(--ink)", textShadow: meta ? "0 8px 24px rgba(0,0,0,.45)" : undefined }}>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6 }}>
-              {meta?.caption ?? `Discover the refined pieces from the ${collection} collection.`}
-            </p>
-            {meta?.description && <p style={{ marginTop: 12, fontSize: 15, opacity: 0.85 }}>{meta.description}</p>}
-          </div>
-        )}
-      </div>
-      <ShopClient products={products} initialFilter={filter} initialCategory={categoryName ?? category} initialCollection={collection} />
+      <ShopClient
+        products={cards}
+        initialCategoryName={categoryName ?? undefined}
+        collectionMeta={meta ? { image: meta.image, caption: meta.caption, description: meta.description } : null}
+      />
       <Footer />
     </>
   );

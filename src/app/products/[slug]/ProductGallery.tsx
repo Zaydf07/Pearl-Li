@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SizingGuide from "@/components/SizingGuide";
 
 interface Props {
@@ -13,6 +13,16 @@ interface Props {
 export default function ProductGallery({ mainImage, extraImages, name, sizingGuideType, productSize }: Props) {
   const all = Array.from(new Set([mainImage, ...extraImages].filter(Boolean))) as string[];
   const [idx, setIdx] = useState(0);
+
+  // Choosing an option elsewhere on the page shows that option's photo.
+  useEffect(() => {
+    const onImage = (e: Event) => {
+      const i = all.indexOf((e as CustomEvent<string>).detail);
+      if (i >= 0) setIdx(i);
+    };
+    window.addEventListener("product-image", onImage);
+    return () => window.removeEventListener("product-image", onImage);
+  }, [all]);
   const showSizingGuide = sizingGuideType && idx === all.length;
 
   return (

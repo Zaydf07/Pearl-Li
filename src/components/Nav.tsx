@@ -4,8 +4,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { COLLECTIONS_14KT, FALLBACK_CATEGORIES, isStyleSection } from "@/lib/categories";
 
 interface Category { id: string; name: string; slug: string; parentType: string; sortOrder: number; }
+
+// Shop menu: built from the curated category list so it is the same with or without a database.
+// Categories that have styles get their own column; the rest go under "More".
+const SHOP_MENU_ORDER = ["Rings", "Bracelets", "Earrings", "Pendants"];
+const SHOP_MENU_GROUPS = SHOP_MENU_ORDER.map(name => ({
+  name,
+  slug: FALLBACK_CATEGORIES.find(c => c.name === name)?.slug ?? name.toLowerCase(),
+  styles: COLLECTIONS_14KT.filter(c => c.parent === name).map(c => ({ name: c.name, slug: FALLBACK_CATEGORIES.find(f => f.name === c.name)?.slug ?? c.name.toLowerCase().replace(/'/g, "").replace(/\s+/g, "-") })),
+}));
+const SHOP_MENU_OTHER = FALLBACK_CATEGORIES.filter(c => !isStyleSection(c.name) && !SHOP_MENU_ORDER.includes(c.name));
 interface CollectionMeta { name: string; eyebrow?: string | null; caption?: string | null; description?: string | null; image?: string | null; href: string; }
 
 const FALLBACK_COLLECTIONS: CollectionMeta[] = [
@@ -13,13 +24,7 @@ const FALLBACK_COLLECTIONS: CollectionMeta[] = [
   { name: "CT Necklaces", eyebrow: "New 2026", image: "/ct-jewellery/Necklace/LOVE_NECKLACE_16MM_2_DIAMONDS/image61.png", href: "/collections/CT%20Necklaces" },
   { name: "CT Rings",     eyebrow: "Heritage",  image: "/ct-jewellery/Ring/LOVE_RING_5.5MM_3_DIAMONDS/image71.png", href: "/collections/CT%20Rings"     },
   { name: "CT Earrings",  eyebrow: "Luxury",    image: "/ct-jewellery/Earrings/LOVE_HOOP_EARRINGS_5.7MM_2_DIAMONDS/image98.png", href: "/collections/CT%20Earrings"  },
-];
-
-const FALLBACK_CATEGORIES: Category[] = [
-  { id: "bracelet", name: "CT Bracelets", slug: "bracelet", parentType: "Jewellery", sortOrder: 0 },
-  { id: "necklace", name: "CT Necklaces", slug: "necklace", parentType: "Jewellery", sortOrder: 1 },
-  { id: "ring", name: "CT Rings", slug: "ring", parentType: "Jewellery", sortOrder: 2 },
-  { id: "earring", name: "CT Earrings", slug: "earring", parentType: "Jewellery", sortOrder: 3 },
+  ...COLLECTIONS_14KT.map(c => ({ ...c, href: `/collections/${encodeURIComponent(c.name)}` })),
 ];
 
 export default function Nav() {
@@ -34,6 +39,7 @@ export default function Nav() {
   const [collections, setCollections] = useState<CollectionMeta[]>(FALLBACK_COLLECTIONS);
   const [search, setSearch]     = useState("");
   const navRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/categories").then(r => r.json()).then(setCategories).catch(() => {});
@@ -59,7 +65,11 @@ export default function Nav() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node))
+      // The dropdown panels sit outside <nav>, so a press inside one must not count as an
+      // outside click. Closing here would disable the panel before the link's click lands.
+      const target = e.target as Element;
+      if (target.closest?.(".nav-dropdown")) return;
+      if (navRef.current && !navRef.current.contains(target))
         setOpenMenu(null);
     };
     document.addEventListener("mousedown", handler);
@@ -74,6 +84,9 @@ export default function Nav() {
     if (search.trim()) {
       router.push(`/search?q=${encodeURIComponent(search)}`);
       setSearch("");
+    } else {
+      // On laptop widths the box is collapsed to its icon; clicking the icon opens it.
+      searchRef.current?.focus();
     }
   };
 
@@ -125,12 +138,13 @@ export default function Nav() {
             {/* Search form — desktop only */}
             <form onSubmit={handleSearch} className="nav-search nav-desktop-only" style={{ position: "relative", display: "flex", alignItems: "center", background: "transparent" }}>
               <input
+                ref={searchRef}
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search jewels..."
                 style={{
-                  width: 140,
+                  width: 120,
                   padding: "6px 8px 6px 8px",
                   fontSize: 11,
                   border: "none",
@@ -180,43 +194,40 @@ export default function Nav() {
         className={`nav-dropdown${openMenu === "shop" ? " open" : ""}`}
         onClick={() => setOpenMenu(null)}
       >
-        <div className="nav-dd-inner">
-          {/* Col 1 — Jewellery categories */}
-          <div>
-            <div className="nav-dd-title">Jewellery</div>
-            {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery").map(cat => (
-              <Link key={cat.id} href={`/shop?category=${encodeURIComponent(cat.slug)}`} className="nav-dd-link">{cat.name}</Link>
-            ))}
-            <Link href="/shop" className="nav-dd-link-all">View All Jewellery →</Link>
-          </div>
+        <div className="nav-dd-inner nav-dd-shop">
+          {/* One column per category, with its styles listed underneath */}
+          {SHOP_MENU_GROUPS.map(group => (
+            <div key={group.name}>
+              <div className="nav-dd-title">{group.name}</div>
+              <Link href={`/shop?category=${group.slug}`} className="nav-dd-link nav-dd-link-strong">All {group.name}</Link>
+              {group.styles.map(s => (
+                <Link key={s.slug} href={`/shop?category=${s.slug}`} className="nav-dd-link">{s.name}</Link>
+              ))}
+            </div>
+          ))}
 
-          {/* Col 2 — Specials */}
+          {/* Categories without styles, plus the store-wide filters */}
           <div>
             <div className="nav-dd-title">More</div>
+            {SHOP_MENU_OTHER.map(c => (
+              <Link key={c.slug} href={`/shop?category=${c.slug}`} className="nav-dd-link">{c.name}</Link>
+            ))}
             <Link href="/shop?filter=New" className="nav-dd-link">New Arrivals</Link>
             <Link href="/shop?filter=Sale" className="nav-dd-link">Sale</Link>
             <Link href="/specials" className="nav-dd-link">Specials</Link>
-            <Link href="/shop" className="nav-dd-link-all" style={{ marginTop: 28 }}>Browse Everything →</Link>
+            <Link href="/shop" className="nav-dd-link-all">Browse Everything →</Link>
           </div>
 
-          {/* Col 3 — Featured */}
-          <div>
-            <div className="nav-dd-title">Featured</div>
-            <Link href="/shop?filter=New"  className="nav-dd-link">New Arrivals</Link>
-            <Link href="/shop?filter=Sale" className="nav-dd-link">On Sale</Link>
-            <Link href="/consultation"     className="nav-dd-link">Private Consultation</Link>
-          </div>
-
-          {/* Col 4 — Image */}
+          {/* Featured image */}
           <div>
             <div className="nav-dd-title">Featured Now</div>
-            <Link href="/collections/CT%20Bracelets" style={{ textDecoration: "none" }}>
+            <Link href="/shop?category=heart-pendants" style={{ textDecoration: "none" }}>
               <img
-                src="/ct-jewellery/Bracelet/LOVE_BRACELET_6.1MM_10_DIAMONDS/image11.png"
-                alt="CT Bracelets Collection"
-                className="nav-dd-img"
+                src="/14kt-jewellery/Pendants/PBZHS0105Y-24b97f84.jpg"
+                alt="Heart diamond pendant in 14K yellow gold"
+                className="nav-dd-img nav-dd-img-contain"
               />
-              <div className="nav-dd-caption">CT Series — Bracelets</div>
+              <div className="nav-dd-caption">Heart Pendants — 14K Yellow Gold</div>
             </Link>
           </div>
         </div>
@@ -229,11 +240,11 @@ export default function Nav() {
       >
         <div className="nav-dd-inner" style={{ gridTemplateColumns: "1fr 1fr 1fr 1.4fr" }}>
           {/* Collections list */}
-          <div style={{ gridColumn: "1 / 3" }}>
-            <div style={{ fontSize: 8, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 12, fontWeight: 600 }}>Featured Collection</div>
-            <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 400, color: "var(--white)", marginBottom: 4, lineHeight: 1.1 }}>CT Series Collection</h3>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,.55)", marginBottom: 32, lineHeight: 1.6 }}>Explore our signature jewelry categories</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 40px" }}>
+          <div style={{ gridColumn: "1 / 4" }}>
+            <div style={{ fontSize: 8, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 12, fontWeight: 600 }}>Collections</div>
+            <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 400, color: "var(--black)", marginBottom: 4, lineHeight: 1.1 }}>Signature Collections</h3>
+            <p style={{ fontSize: 14, color: "var(--ink-muted)", marginBottom: 32, lineHeight: 1.6 }}>Explore our signature jewellery collections</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0 40px" }}>
               {collections.map(c => (
                 <div key={c.name} style={{ marginBottom: 20 }}>
                   <div style={{ fontSize: 8, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--emerald)", marginBottom: 4 }}>{c.eyebrow || "Collection"}</div>
@@ -243,9 +254,6 @@ export default function Nav() {
             </div>
             <Link href="/collections" className="nav-dd-link-all" style={{ marginTop: 32 }}>Explore All Collections →</Link>
           </div>
-
-          {/* Spacer */}
-          <div />
 
           {/* Featured image */}
           <div>
@@ -300,7 +308,7 @@ export default function Nav() {
 
           <div className="mobile-nav-section">Shop</div>
           <Link href="/shop"         className="mobile-nav-link" onClick={() => setMobileOpen(false)}>All Pieces</Link>
-          {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery").map(c => (
+          {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType === "Jewellery" && !isStyleSection(c.name)).map(c => (
             <Link key={c.id} href={`/shop?category=${encodeURIComponent(c.slug)}`} className="mobile-nav-link mobile-nav-sub" onClick={() => setMobileOpen(false)}>{c.name}</Link>
           ))}
           {(categories.length ? categories : FALLBACK_CATEGORIES).filter(c => c.parentType !== "Jewellery").map(c => (
